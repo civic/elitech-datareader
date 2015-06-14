@@ -9,15 +9,17 @@ device = elitech.Device(port)
 device.debug = True
 device.init()
 
+device.set_clock(datetime.datetime.now())
+
 # get devinfo
 devinfo = device.get_devinfo()
 for k,v in vars(devinfo).items():
     print("{}={}".format(k, v))
 
 # get data
-body = device.get_data()
-for elm in body:
-    print("{0}\t{1:%Y-%m-%d %H:%M:%S}\t{2:.1f}".format(*elm))
+#body = device.get_data()
+#for elm in body:
+#    print("{0}\t{1:%Y-%m-%d %H:%M:%S}\t{2:.1f}".format(*elm))
 
 # update param
 #param_put = devinfo.to_param_put()

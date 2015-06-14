@@ -124,7 +124,7 @@ for elm in body:
     
 ```
 
-### update param
+### Update param
 
 ```python
 device = elitech.Device("/dev/tty.SLAB_USBtoUART")

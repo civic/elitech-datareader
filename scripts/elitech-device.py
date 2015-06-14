@@ -32,6 +32,9 @@ def command_simpleset(args):
     device = elitech.Device(args.serial_port)
     device.init()
     dev_info = device.get_devinfo()
+
+    device.set_clock(dev_info.station_no, datetime.datetime.now())
+
     param_put = dev_info.to_param_put()
 
     if args.interval:
