@@ -41,7 +41,7 @@ Example(Script)
 
 ### Initialize device.
 
-initialize. rec interval 10sec.
+initialize. rec interval 10sec. set clock now.
 
 ```
 $ elictec-device --command simple-set --interval=10 /dev/tty.SLAB_USBtoUART
