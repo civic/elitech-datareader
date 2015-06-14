@@ -29,6 +29,12 @@ def _datetime_unpack(date_bytes):
     """
     return datetime(*unpack(">h5b", date_bytes))
 
+def _datetime_pack(dt):
+    """
+    :type dt: datetime
+    :rtype: bytes
+    """
+    return _intarray2bytes([(dt.year&0xFF00)>>8, dt.year&0x00FF, dt.month, dt.day, dt.hour, dt.minute, dt.second])
 
 def _interval_unpack(time_bytes):
     """
@@ -384,5 +390,36 @@ class DataBodyResponse(ResponseMessage):
 
         self.records = unpacked[1:-1]
 
+class ClockSetRequest(RequestMessage):
+    def __init__(self, target_station_no, set_time=datetime.now()):
+        self.target_station_no = target_station_no
+        self.set_time = set_time
 
+    def to_bytes(self):
+        write_bytes = pack(
+            ">b"  # 0x33
+            "b"  # target station no
+            "2s"  # 0x0700
+            "7s",  # set time
+            0x33,
+            self.target_station_no,
+            _bin('07 00'),
+            _datetime_pack(self.set_time),
+            )
 
+        ba = _append_checksum(write_bytes)
+        return ba
+
+class ClockSetResponse(ResponseMessage):
+    """
+    :type msg: bytes
+    """
+
+    def __init__(self):
+        self.msg = None
+
+    def read(self, ser):
+        """
+        :type ser: serial.Serial
+        """
+        self.msg = ser.read(3)

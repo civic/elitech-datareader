@@ -8,6 +8,7 @@ from io import BytesIO
 from elitech.msg import (
     _bin,
     _datetime_unpack,
+    _datetime_pack,
     _interval_unpack,
     _interval_pack,
     _append_checksum,
@@ -34,6 +35,9 @@ class TestFunctions(unittest.TestCase):
     def test_append_checksum(self):
         self.assertEqual(_append_checksum(b'\x01\x02\x03'), b'\x01\x02\x03\x06')
         self.assertEqual(_append_checksum(b'\xF0\x0A\x09'), b'\xF0\x0A\x09\x03')
+
+    def test_datetime_pack(self):
+        self.assertEqual(_datetime_pack(datetime(2015,1,2,3,4,5)), b'\x07\xDF\x01\x02\x03\x04\x05')
 
 class TestMessages(unittest.TestCase):
     def test_InitRequest(self):
@@ -140,6 +144,15 @@ class TestMessages(unittest.TestCase):
         res.read(BytesIO(_bin("55 00 01 FF FF 00 03 00 04 00 05 00 06 00 07 00 08 00 09 00 0A 8C")))
         self.assertEqual(len(res.records), 10)
         self.assertEqual(res.records, (1, -1, 3, 4, 5, 6, 7, 8, 9, 10))
+
+    def test_ClockSetRequest(self):
+        req = ClockSetRequest(3, datetime(2015, 5, 14, 23, 4, 53))
+        self.assertEqual(req.to_bytes(), _bin("33 03 07 00 07 DF 05 0E 17 04 35 86"))
+
+    def test_ClockSetResponse(self):
+        res = ClockSetResponse()
+        res.read(BytesIO(_bin("55 A3 F8")))
+        self.assertEqual(res.msg, b'\x55\xA3\xF8')
 
 if __name__ == '__main__':
     unittest.main()
