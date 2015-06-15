@@ -21,7 +21,7 @@ class SdistCommand(setuptools.command.sdist.sdist):
 setup(
     cmdclass={'sdist': SdistCommand},
     name='elitech-datareader',
-    version='0.8.2',
+    version='0.8.3',
     packages=find_packages(),
     url='http://github.com/civic/elitech-datareader/',
     license='MIT',
