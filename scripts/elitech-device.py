@@ -21,6 +21,8 @@ def main():
         command_set(args)
     elif(args.command == 'devinfo'):
         command_devinfo(args)
+    elif(args.command == 'clock'):
+        command_clock(args)
 
 def _convert_time(sec):
     hour = int(sec / 3600.0)
@@ -33,7 +35,7 @@ def command_simpleset(args):
     device.init()
     dev_info = device.get_devinfo()
 
-    device.set_clock(dev_info.station_no, datetime.datetime.now())
+    device.set_clock(dev_info.station_no)
 
     param_put = dev_info.to_param_put()
 
@@ -87,7 +89,6 @@ def command_set(args):
     for k,v in vars(param_put).items():
         print("{}={}".format(k, v))
 
-
     device.update(param_put)
 
 def command_devinfo(args):
@@ -97,13 +98,22 @@ def command_devinfo(args):
     for k,v in vars(dev_info).items():
         print("{}={}".format(k, v))
 
+def command_clock(args):
+    device = elitech.Device(args.serial_port)
+    dev_info = device.get_devinfo()
+    if args.time:
+        clock = datetime.datetime.strptime(args.time, '%Y%m%d%H%M%S')
+    else:
+        clock = None
+    device.set_clock(dev_info.station_no, clock)
+
 
 def parse_args():
     """
     :rtype: argparse.Namespace
     """
     parser = argparse.ArgumentParser('description elitech RC-4 data reader')
-    parser.add_argument('-c', "--command", choices=['init', 'get', 'simple-set', 'set', 'devinfo'])
+    parser.add_argument('-c', "--command", choices=['init', 'get', 'simple-set', 'set', 'devinfo', 'clock'])
     parser.add_argument('-i', "--interval", type=int)
     parser.add_argument("--upper_limit", type=float)
     parser.add_argument("--lower_limit", type=float)
@@ -114,6 +124,7 @@ def parse_args():
     parser.add_argument('--alarm', choices=['x', '3', '10'])
     parser.add_argument('--temp_unit', choices=['C', 'F'])
     parser.add_argument('--temp_calibration', type=float)
+    parser.add_argument('--time', type=str)
     parser.add_argument('serial_port')
     return parser.parse_args()
 
