@@ -204,4 +204,11 @@ class DeviceTest(unittest.TestCase):
 
         self.assertEqual(res, expect)
 
+    def test_set_clock(self):
+        device = elitech.Device(None)
+
+        device._ser = DummySerial(_bin("55 A3 F8"))
+        res = device.set_clock(123, datetime(2015, 1, 2, 10, 20, 30))
+
+        self.assertEqual(res.msg, _bin("55 A3 F8"))
 
