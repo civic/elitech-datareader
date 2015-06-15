@@ -158,7 +158,7 @@ class Device:
 
         return data_list
 
-    def set_clock(self, station_no, set_time):
+    def set_clock(self, station_no, set_time=None):
         """
         :type station_no: int
         :type set_time: datetime
@@ -166,7 +166,9 @@ class Device:
         """
         try:
             self._ser.open()
-            req = ClockSetRequest(station_no)
+            if set_time is None:
+                set_time = datetime.now()
+            req = ClockSetRequest(station_no, set_time)
             res = ClockSetResponse()
             self._talk(req, res)
         finally:

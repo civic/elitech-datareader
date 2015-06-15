@@ -391,9 +391,9 @@ class DataBodyResponse(ResponseMessage):
         self.records = unpacked[1:-1]
 
 class ClockSetRequest(RequestMessage):
-    def __init__(self, target_station_no, set_time=datetime.now()):
+    def __init__(self, target_station_no, set_time=None):
         self.target_station_no = target_station_no
-        self.set_time = set_time
+        self.set_time = set_time if set_time is not None else datetime.now()
 
     def to_bytes(self):
         write_bytes = pack(
