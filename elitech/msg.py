@@ -210,7 +210,11 @@ class DevInfoResponse(ResponseMessage):
         self.rec_count = rec_count
         self.current = _datetime_unpack(current)
         self.user_info = user_info.decode("utf-8").rstrip("\x00")
-        self.dev_num = dev_num.decode("utf-8")
+        try:
+            self.dev_num = dev_num.decode("utf-8")
+        except UnicodeDecodeError as e:
+            self.dev_num = ""
+
         self.delay = int(delay / 16.0) + 0.5 * (delay % 16)
         self.tone_set = ToneSet(tone_set)
         self.alarm = AlarmSetting(alarm)

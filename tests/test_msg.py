@@ -82,6 +82,21 @@ class TestMessages(unittest.TestCase):
         self.assertEqual(res.temp_unit, TemperatureUnit.C)
         self.assertEqual(res.temp_calibration, -1.5)
 
+    def test_DevInfoResponse_devnum_default_is_FF(self):
+        res = DevInfoResponse()
+        res.read(BytesIO(_bin("55 02 01 28 0A 00 00 1E 02 58 FE D4 07 DF 05 0E "
+                              "16 2F 04 02 07 DF 05 0E 07 38 0E 13 64 00 09 07 "
+                              "DF 05 0E 16 2F 36 52 43 2D 34 20 44 61 74 61 20 "
+                              "4C 6F 67 67 65 72 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 FF FF FF FF FF FF "
+                              "FF FF FF FF 11 31 00 31 F1 00 00 00 00 00 00 B3"
+                              )))
+        self.assertEqual(res.dev_num, "")
+
     def test_to_param_put(self):
         res = DevInfoResponse()
         res.read(BytesIO(_bin("55 02 01 28 0A 00 00 1E 02 58 FE D4 07 DF 05 0E "
