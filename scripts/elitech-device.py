@@ -59,6 +59,8 @@ def command_set(args):
     dev_info = device.get_devinfo()
     param_put = dev_info.to_param_put()
 
+    station_no = dev_info.station_no
+
     if args.interval:
         param_put.rec_interval = _convert_time(args.interval)
     if args.upper_limit:
@@ -67,6 +69,7 @@ def command_set(args):
         param_put.lower_limit = args.lower_limit
     if args.station_no:
         param_put.update_station_no = int(args.station_no)
+        station_no = param_put.update_station_no
     if args.stop_button:
         param_put.stop_button = StopButton.ENABLE if args.stop_button == 'y' else StopButton.DISABLE
     if args.delay:
@@ -85,11 +88,15 @@ def command_set(args):
 
     if args.temp_calibration:
         param_put.temp_calibration = float(args.temp_calibration)
-
     for k,v in vars(param_put).items():
         print("{}={}".format(k, v))
 
     device.update(param_put)
+
+    if args.dev_num:
+        device.set_device_number(station_no, args.dev_num)
+        print("{}={}".format("dev_num", args.dev_num))
+
 
 def command_devinfo(args):
     device = elitech.Device(args.serial_port)
@@ -125,6 +132,7 @@ def parse_args():
     parser.add_argument('--temp_unit', choices=['C', 'F'])
     parser.add_argument('--temp_calibration', type=float)
     parser.add_argument('--time', type=str)
+    parser.add_argument('--dev_num', type=str)
     parser.add_argument('serial_port')
     return parser.parse_args()
 
