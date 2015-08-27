@@ -463,3 +463,37 @@ class DevNumResponse(ResponseMessage):
         """
         self.msg = ser.read(3)
 
+class UserInfoRequest(RequestMessage):
+    """
+    :type target_station_no: int
+    :type user_info: str
+    """
+
+    def __init__(self, target_station_no):
+        self.target_station_no = target_station_no
+        self.user_info = ""
+
+    def to_bytes(self):
+        write_bytes = pack(
+            ">b"  # 0x33
+            "b"  # target station no
+            "2s"  # 0x0900
+            "100s",  # device_number
+            0x33,
+            self.target_station_no,
+            _bin('09 00'),
+            self.user_info.encode("utf8")[:100],
+        )
+
+        ba = _append_checksum(write_bytes)
+        return ba
+
+class UserInfoResponse(ResponseMessage):
+    def __init__(self):
+        self.msg = None
+
+    def read(self, ser):
+        """
+        :type ser: serial.Serial
+        """
+        self.msg = ser.read(3)

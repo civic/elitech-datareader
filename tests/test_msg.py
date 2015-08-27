@@ -180,5 +180,27 @@ class TestMessages(unittest.TestCase):
         res.read(BytesIO(_bin("55 A7 FC")))
         self.assertEqual(res.msg, b'\x55\xA7\xFC')
 
+    def test_UserInfoRequest(self):
+        req = UserInfoRequest(1)
+        req.user_info = "".join([str(n)+"____.____" for n in range(10)])
+
+        self.assertEqual(req.to_bytes(), _bin("33 01 09 00 "
+                                              "30 5F 5F 5F 5F 2E 5F 5F 5F 5F "
+                                              "31 5F 5F 5F 5F 2E 5F 5F 5F 5F "
+                                              "32 5F 5F 5F 5F 2E 5F 5F 5F 5F "
+                                              "33 5F 5F 5F 5F 2E 5F 5F 5F 5F "
+                                              "34 5F 5F 5F 5F 2E 5F 5F 5F 5F "
+                                              "35 5F 5F 5F 5F 2E 5F 5F 5F 5F "
+                                              "36 5F 5F 5F 5F 2E 5F 5F 5F 5F "
+                                              "37 5F 5F 5F 5F 2E 5F 5F 5F 5F "
+                                              "38 5F 5F 5F 5F 2E 5F 5F 5F 5F "
+                                              "39 5F 5F 5F 5F 2E 5F 5F 5F 5F "
+                                              "C6"
+                                              ))
+
+    def test_UserInfoResponse(self):
+        res = UserInfoResponse()
+        res.read(BytesIO(_bin("55 AB 00")))
+        self.assertEqual(res.msg, b'\x55\xAB\x00')
 if __name__ == '__main__':
     unittest.main()
