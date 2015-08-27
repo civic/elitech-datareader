@@ -218,3 +218,10 @@ class DeviceTest(unittest.TestCase):
 
         res = device.set_device_number(1, "1122334455")
         self.assertEqual(res.msg, _bin("01 02 03"))
+
+    def test_set_user_info(self):
+        device = elitech.Device(None)
+        device._ser = DummySerial(_bin("01 02 03"))
+
+        res = device.set_user_info(1, "1122334455")
+        self.assertEqual(res.msg, _bin("01 02 03"))
