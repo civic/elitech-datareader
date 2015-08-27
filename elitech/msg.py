@@ -427,3 +427,39 @@ class ClockSetResponse(ResponseMessage):
         :type ser: serial.Serial
         """
         self.msg = ser.read(3)
+
+class DevNumRequest(RequestMessage):
+    """
+    :type target_station_no: int
+    :type device_number: str
+    """
+
+    def __init__(self, target_station_no):
+        self.target_station_no = target_station_no
+        self.device_number = "1234567890"
+
+    def to_bytes(self):
+        write_bytes = pack(
+            ">b"  # 0x33
+            "b"  # target station no
+            "2s"  # 0x0B00
+            "10s",  # device_number
+            0x33,
+            self.target_station_no,
+            _bin('0B 00'),
+            self.device_number.encode("utf8")[:10],
+            )
+
+        ba = _append_checksum(write_bytes)
+        return ba
+
+class DevNumResponse(ResponseMessage):
+    def __init__(self):
+        self.msg = None
+
+    def read(self, ser):
+        """
+        :type ser: serial.Serial
+        """
+        self.msg = ser.read(3)
+

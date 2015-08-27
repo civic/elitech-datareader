@@ -169,5 +169,16 @@ class TestMessages(unittest.TestCase):
         res.read(BytesIO(_bin("55 A3 F8")))
         self.assertEqual(res.msg, b'\x55\xA3\xF8')
 
+    def test_DevNumRequest(self):
+        req = DevNumRequest(2)
+        req.device_number = "11223344"
+
+        self.assertEqual(req.to_bytes(), _bin("33 02 0B 00 31 31 32 32 33 33 34 34 00 00 D4"))
+
+    def test_DevNumResponse(self):
+        res = DevNumResponse()
+        res.read(BytesIO(_bin("55 A7 FC")))
+        self.assertEqual(res.msg, b'\x55\xA7\xFC')
+
 if __name__ == '__main__':
     unittest.main()
