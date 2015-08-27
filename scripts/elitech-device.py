@@ -97,6 +97,9 @@ def command_set(args):
         device.set_device_number(station_no, args.dev_num)
         print("{}={}".format("dev_num", args.dev_num))
 
+    if args.user_info:
+        device.set_user_info(station_no, args.user_info)
+        print("{}={}".format("user_info", args.user_info))
 
 def command_devinfo(args):
     device = elitech.Device(args.serial_port)
@@ -133,6 +136,7 @@ def parse_args():
     parser.add_argument('--temp_calibration', type=float)
     parser.add_argument('--time', type=str)
     parser.add_argument('--dev_num', type=str)
+    parser.add_argument('--user_info', type=str)
     parser.add_argument('serial_port')
     return parser.parse_args()
 
