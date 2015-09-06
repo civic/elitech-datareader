@@ -96,7 +96,7 @@ set device parameter.
 ```
 $ elitec-device.py --command set --interval=10 --upper_limit=60.0 --lower_limit=-30.0 \
 --station_no=1 --stop_button=y --delay=0 --tone_set=y --alarm=y --temp_unit=C \
---temp_calibration=-1.5 /dev/tty.SLAB_USBtoUART
+--temp_calibration=-1.5 --dev_num=1234567890 --user_info="RC4 Data Logger" /dev/tty.SLAB_USBtoUART
 ```
 
 Example(Python module)

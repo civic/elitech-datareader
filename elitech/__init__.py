@@ -1,6 +1,7 @@
 __author__ = 'civic'
 
 from serial import Serial
+
 import time
 from datetime import (
     datetime,
@@ -28,7 +29,11 @@ from .msg import (
     DataBodyRequest,
     DataBodyResponse,
     ClockSetRequest,
-    ClockSetResponse
+    ClockSetResponse,
+    DevNumRequest,
+    DevNumResponse,
+    UserInfoRequest,
+    UserInfoResponse,
 )
 import six
 
@@ -176,3 +181,36 @@ class Device:
             time.sleep(self.wait_time)
         return res
 
+    def set_device_number(self, station_no, device_number):
+        """
+        :type station_no: int
+        :type device_number: string
+        :rtype:DevNumResponse
+        """
+        try:
+            self._ser.open()
+            req = DevNumRequest(station_no)
+            req.device_number = device_number
+            res = self._talk(req, DevNumResponse())
+        finally:
+            self._ser.close()
+            time.sleep(self.wait_time)
+
+        return res
+
+    def set_user_info(self, station_no, user_info):
+        """
+        :type station_no: int
+        :type user_info: string
+        :rtype: UserInfo
+        """
+        try:
+            self._ser.open()
+            req = UserInfoRequest(station_no)
+            req.user_info = user_info
+            res = self._talk(req, UserInfoResponse())
+        finally:
+            self._ser.close()
+            time.sleep(self.wait_time)
+
+        return res

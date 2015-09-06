@@ -11,8 +11,9 @@ class SdistCommand(setuptools.command.sdist.sdist):
             with open("README.txt", "w") as f:
                 f.write(rst)
             print("convert markdown to rst")
-        except:
-            pass
+        except Exception as e:
+            raise e
+
 
         super(SdistCommand, self).run()
         os.remove("README.txt")
@@ -21,7 +22,7 @@ class SdistCommand(setuptools.command.sdist.sdist):
 setup(
     cmdclass={'sdist': SdistCommand},
     name='elitech-datareader',
-    version='0.8.3',
+    version='0.9.0',
     packages=find_packages(),
     url='http://github.com/civic/elitech-datareader/',
     license='MIT',
