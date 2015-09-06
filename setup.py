@@ -11,8 +11,9 @@ class SdistCommand(setuptools.command.sdist.sdist):
             with open("README.txt", "w") as f:
                 f.write(rst)
             print("convert markdown to rst")
-        except:
-            pass
+        except Exception as e:
+            raise e
+
 
         super(SdistCommand, self).run()
         os.remove("README.txt")
