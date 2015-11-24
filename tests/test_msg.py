@@ -140,6 +140,32 @@ class TestMessages(unittest.TestCase):
         self.assertEqual(param_put.temp_unit, TemperatureUnit.C)
         self.assertEqual(param_put.temp_calibration, -1.5)
 
+    def test_to_param_put(self):
+        res = DevInfoResponse()
+        res.read(BytesIO(_bin("55 02 01 28 0A FF FF FF 02 58 FE D4 07 DF 05 0E "
+                              "16 2F 04 02 FF FF 05 0E 07 38 0E 13 64 00 09 07 "
+                              "DF 05 0E 16 2F 36 FF FF FF FF FF FF FF FF FF FF "
+                              "4C 6F 67 67 65 72 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 FF FF FF FF FF FF "
+                              "FF FF FF FF FF FF FF FF FF FF FF FF FF FF 00 B3"
+                              )))
+        param_put = res.to_param_put()
+        self.assertEqual(param_put.rec_interval, time(0, 0, 30))
+        self.assertEqual(param_put.target_station_no, 2)
+        self.assertEqual(param_put.update_station_no, 2)
+        self.assertEqual(param_put.upper_limit, 60.0)
+        self.assertEqual(param_put.lower_limit, -30.0)
+        self.assertEqual(param_put.stop_button, StopButton.ENABLE)
+        self.assertEqual(param_put.delay, 0.0)
+        self.assertEqual(param_put.tone_set, ToneSet.NONE)
+        self.assertEqual(param_put.alarm, AlarmSetting.NONE)
+        self.assertEqual(param_put.temp_unit, TemperatureUnit.C)
+        self.assertEqual(param_put.temp_calibration, -0.1)
+
     def test_ParamPutRequest(self):
         req = ParamPutRequest(2)
         req.rec_interval = time(0, 0, 30)

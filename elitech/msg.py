@@ -223,7 +223,11 @@ class DevInfoResponse(ResponseMessage):
         except UnicodeDecodeError as e:
             self.dev_num = ""
 
-        self.delay = int(delay / 16.0) + 0.5 * (delay % 16)
+        if delay in [0x00, 0x01, 0x10, 0x11, 0x20, 0x21]:
+            self.delay = int(delay / 16.0) + 0.5 * (delay % 16)
+        else:
+            self.delay = 0.0
+
         try:
             self.tone_set = ToneSet(tone_set)
         except ValueError:
@@ -247,7 +251,7 @@ class DevInfoResponse(ResponseMessage):
         :rtype : ParamPutRequest
         """
         req = ParamPutRequest(self.station_no)
-        req.rec_interval = self.rec_interval
+        req.rec_interval = self.rec_interval or time(0, 0, 30)
         req.upper_limit = self.upper_limit
         req.lower_limit = self.lower_limit
         req.update_station_no = self.station_no
