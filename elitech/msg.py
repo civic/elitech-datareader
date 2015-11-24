@@ -27,7 +27,10 @@ def _datetime_unpack(date_bytes):
     """
     :rtype: datetime
     """
-    return datetime(*unpack(">h5b", date_bytes))
+    try:
+        return datetime(*unpack(">h5b", date_bytes))
+    except ValueError:
+        return None
 
 def _datetime_pack(dt):
     """
@@ -40,8 +43,10 @@ def _interval_unpack(time_bytes):
     """
     :rtype: time
     """
-    return time(*unpack(">3b", time_bytes))
-
+    try:
+        return time(*unpack(">3b", time_bytes))
+    except Exception:
+        return None
 
 def _interval_pack(t):
     """
@@ -209,16 +214,31 @@ class DevInfoResponse(ResponseMessage):
         self.stop_button = StopButton(stp_btn)
         self.rec_count = rec_count
         self.current = _datetime_unpack(current)
-        self.user_info = user_info.decode("utf-8").rstrip("\x00")
+        try:
+            self.user_info = user_info.decode("utf-8").rstrip("\x00")
+        except UnicodeDecodeError as e:
+            self.user_info = ""
         try:
             self.dev_num = dev_num.decode("utf-8")
         except UnicodeDecodeError as e:
             self.dev_num = ""
 
         self.delay = int(delay / 16.0) + 0.5 * (delay % 16)
-        self.tone_set = ToneSet(tone_set)
-        self.alarm = AlarmSetting(alarm)
-        self.temp_unit = TemperatureUnit(temp_unit)
+        try:
+            self.tone_set = ToneSet(tone_set)
+        except ValueError:
+            self.tone_set = ToneSet.NONE
+
+        try:
+            self.alarm = AlarmSetting(alarm)
+        except ValueError:
+            self.alarm = AlarmSetting.NONE
+
+        try:
+            self.temp_unit = TemperatureUnit(temp_unit)
+        except ValueError:
+            self.temp_unit = TemperatureUnit.C
+
         self.temp_calibration = temp_calib / 10.0
 
     def to_param_put(self):

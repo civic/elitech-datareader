@@ -97,6 +97,22 @@ class TestMessages(unittest.TestCase):
                               )))
         self.assertEqual(res.dev_num, "")
 
+    def test_DevInfoResponse_virgin_device(self):
+        res = DevInfoResponse()
+        res.read(BytesIO(_bin("55 02 01 28 0A FF FF FF 02 58 FE D4 07 DF 05 0E "
+                              "16 2F 04 02 FF FF 05 0E 07 38 0E 13 64 00 09 07 "
+                              "DF 05 0E 16 2F 36 FF FF FF FF FF FF FF FF FF FF "
+                              "4C 6F 67 67 65 72 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 FF FF FF FF FF FF "
+                              "FF FF FF FF FF FF FF FF FF FF FF FF FF FF 00 B3"
+                              )))
+        self.assertIsNone(res.rec_interval)
+        self.assertIsNone(res.start_time)
+
     def test_to_param_put(self):
         res = DevInfoResponse()
         res.read(BytesIO(_bin("55 02 01 28 0A 00 00 1E 02 58 FE D4 07 DF 05 0E "
