@@ -44,7 +44,7 @@ Example(Script)
 initialize. rec interval 10sec. set clock now.
 
 ```
-$ elictec-device --command simple-set --interval=10 /dev/tty.SLAB_USBtoUART
+$ elitech-datareader --command simple-set --interval=10 /dev/tty.SLAB_USBtoUART
 ```
 
 ### Get data
@@ -54,7 +54,7 @@ Press stop button for stop recording.
 output to stdout.
 
 ```
-$ elitec-device.py --command get /dev/tty.SLAB_USBtoUART
+$ elitech-datareader --command get /dev/tty.SLAB_USBtoUART
 6
 1	2015-06-07 13:53:36	25.0
 2	2015-06-07 13:53:46	25.1
@@ -69,7 +69,7 @@ $ elitec-device.py --command get /dev/tty.SLAB_USBtoUART
 get device information.
 
 ```
-$ elitec-device.py --command devinfo /dev/tty.SLAB_USBtoUART
+$ elitech-datareader --command devinfo /dev/tty.SLAB_USBtoUART
 station_no=3
 last_online=2015-06-09 01:13:13
 temp_unit=TemperatureUnit.C
@@ -94,8 +94,8 @@ dev_num=9900112233
 set device parameter.
 
 ```
-$ elitec-device.py --command set --interval=10 --upper_limit=60.0 --lower_limit=-30.0 \
---station_no=1 --stop_button=y --delay=0 --tone_set=y --alarm=y --temp_unit=C \
+$ elitech-datareader --command set --interval=10 --upper_limit=60.0 --lower_limit=-30.0 \
+--station_no=1 --stop_button=y --delay=0.0 --tone_set=y --alarm=x --temp_unit=C \
 --temp_calibration=-1.5 --dev_num=1234567890 --user_info="RC4 Data Logger" /dev/tty.SLAB_USBtoUART
 ```
 

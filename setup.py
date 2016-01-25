@@ -22,7 +22,7 @@ class SdistCommand(setuptools.command.sdist.sdist):
 setup(
     cmdclass={'sdist': SdistCommand},
     name='elitech-datareader',
-    version='0.9.1',
+    version='0.9.2',
     packages=find_packages(),
     url='http://github.com/civic/elitech-datareader/',
     license='MIT',
@@ -43,7 +43,10 @@ setup(
     platforms='any',
     test_suite = "tests",
     install_requires=open('requirements.txt').read().splitlines(),
-    scripts = ['scripts/elitech-device.py'],
+    entry_points="""
+    [console_scripts]
+    elitech-datareader=scripts.elitech_device:main
+    """,
     dependency_links=["http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx"]
 
 )
