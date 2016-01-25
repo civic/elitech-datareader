@@ -146,7 +146,7 @@ class Device:
             for p in range(page):
 
                 req = DataBodyRequest(devinfo.station_no, p)
-                count = 100 if (p+1) * 100 < devinfo.rec_count else (devinfo.rec_count % 100)
+                count = 100 if (p+1) * 100 <= devinfo.rec_count else (devinfo.rec_count % 100)
                 res = DataBodyResponse(count)
                 self._talk(req, res)
 
