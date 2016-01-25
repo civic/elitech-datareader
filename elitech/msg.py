@@ -182,7 +182,7 @@ class DevInfoResponse(ResponseMessage):
          start_time, stp_btn, _, rec_count, current, user_info, dev_num, delay, tone_set,
          alarm, temp_unit, temp_calib, _) = unpack(
             '>1s'
-            'b'  # station no
+            'B'  # station no
             '3s'
             '3s'  # record interval hh mm ss
             'h'  # upper limit
@@ -298,12 +298,12 @@ class ParamPutRequest(RequestMessage):
     def to_bytes(self):
         write_bytes = pack(
             ">b"  # 0x33
-            "b"  # target station no
+            "B"  # target station no
             "2s"  # 0x0500
             "3s"  # record interval
             "h"  # upper limit
             "h"  # lower limit
-            "b"  # update station no
+            "B"  # update station no
             "b"  # stopbutton permit=0x13, prohibit=0x31
             "b"  # delaytime
             "b"  # tone set
@@ -349,9 +349,9 @@ class DataHeaderRequest(RequestMessage):
     def to_bytes(self):
         write_bytes = pack(
             ">b"    # 0x33
-            "b"     # target station no
+            "B"     # target station no
             "b"     # command: datahead 0x01
-            "b",    # page number 0x00
+            "B",    # page number 0x00
             0x33, self.target_station_no, 0x01, 0x00)
 
         return _append_checksum(write_bytes)
@@ -389,9 +389,9 @@ class DataBodyRequest(RequestMessage):
     def to_bytes(self):
         write_bytes = pack(
             ">b"    # 0x33
-            "b"     # target station no
+            "B"     # target station no
             "b"     # command databody 0x02
-            "b",    # page number
+            "B",    # page number
             0x33, self.target_station_no, 0x02, self.page_num)
 
         return _append_checksum(write_bytes)
@@ -426,7 +426,7 @@ class ClockSetRequest(RequestMessage):
     def to_bytes(self):
         write_bytes = pack(
             ">b"  # 0x33
-            "b"  # target station no
+            "B"  # target station no
             "2s"  # 0x0700
             "7s",  # set time
             0x33,
@@ -465,7 +465,7 @@ class DevNumRequest(RequestMessage):
     def to_bytes(self):
         write_bytes = pack(
             ">b"  # 0x33
-            "b"  # target station no
+            "B"  # target station no
             "2s"  # 0x0B00
             "10s",  # device_number
             0x33,
@@ -500,7 +500,7 @@ class UserInfoRequest(RequestMessage):
     def to_bytes(self):
         write_bytes = pack(
             ">b"  # 0x33
-            "b"  # target station no
+            "B"  # target station no
             "2s"  # 0x0900
             "100s",  # device_number
             0x33,
