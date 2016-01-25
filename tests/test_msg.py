@@ -53,7 +53,7 @@ class TestMessages(unittest.TestCase):
 
     def test_DevInfoResponse(self):
         res = DevInfoResponse()
-        res.read(BytesIO(_bin("55 02 01 28 0A 00 00 1E 02 58 FE D4 07 DF 05 0E "
+        res.read(BytesIO(_bin("55 82 01 28 0A 00 00 1E 02 58 FE D4 07 DF 05 0E "
                               "16 2F 04 02 07 DF 05 0E 07 38 0E 13 64 00 09 07 "
                               "DF 05 0E 16 2F 36 52 43 2D 34 20 44 61 74 61 20 "
                               "4C 6F 67 67 65 72 00 00 00 00 00 00 00 00 00 00 "
@@ -64,7 +64,7 @@ class TestMessages(unittest.TestCase):
                               "00 00 00 00 00 00 00 00 00 00 39 39 30 30 31 31 "
                               "32 32 33 33 11 31 00 31 F1 00 00 00 00 00 00 B3"
                               )))
-        self.assertEqual(res.station_no, 2)
+        self.assertEqual(res.station_no, 130)
         self.assertEqual(res.rec_interval, time(0, 0, 30))
         self.assertEqual(res.upper_limit, 60.0)
         self.assertEqual(res.lower_limit, -30.0)
@@ -115,7 +115,7 @@ class TestMessages(unittest.TestCase):
 
     def test_to_param_put(self):
         res = DevInfoResponse()
-        res.read(BytesIO(_bin("55 02 01 28 0A 00 00 1E 02 58 FE D4 07 DF 05 0E "
+        res.read(BytesIO(_bin("55 82 01 28 0A 00 00 1E 02 58 FE D4 07 DF 05 0E "
                               "16 2F 04 02 07 DF 05 0E 07 38 0E 13 64 00 09 07 "
                               "DF 05 0E 16 2F 36 52 43 2D 34 20 44 61 74 61 20 "
                               "4C 6F 67 67 65 72 00 00 00 00 00 00 00 00 00 00 "
@@ -128,8 +128,8 @@ class TestMessages(unittest.TestCase):
                               )))
         param_put = res.to_param_put()
         self.assertEqual(param_put.rec_interval, time(0, 0, 30))
-        self.assertEqual(param_put.target_station_no, 2)
-        self.assertEqual(param_put.update_station_no, 2)
+        self.assertEqual(param_put.target_station_no, 130)
+        self.assertEqual(param_put.update_station_no, 130)
         self.assertEqual(param_put.rec_interval, time(0, 0, 30))
         self.assertEqual(param_put.upper_limit, 60.0)
         self.assertEqual(param_put.lower_limit, -30.0)
@@ -140,7 +140,7 @@ class TestMessages(unittest.TestCase):
         self.assertEqual(param_put.temp_unit, TemperatureUnit.C)
         self.assertEqual(param_put.temp_calibration, -1.5)
 
-    def test_to_param_put(self):
+    def test_to_param_put2(self):
         res = DevInfoResponse()
         res.read(BytesIO(_bin("55 02 01 28 0A FF FF FF 02 58 FE D4 07 DF 05 0E "
                               "16 2F 04 02 FF FF 05 0E 07 38 0E 13 64 00 09 07 "
@@ -167,14 +167,14 @@ class TestMessages(unittest.TestCase):
         self.assertEqual(param_put.temp_calibration, -0.1)
 
     def test_ParamPutRequest(self):
-        req = ParamPutRequest(2)
+        req = ParamPutRequest(130)
         req.rec_interval = time(0, 0, 30)
-        req.update_station_no = 2
+        req.update_station_no = 130
         req.stop_button = StopButton.ENABLE
         req.delay = 0
         req.temp_calibration = -1.5
 
-        self.assertEqual(req.to_bytes(), _bin("33 02 05 00 00 00 1E 02 58 FE D4 02 13 00 31 00 "
+        self.assertEqual(req.to_bytes(), _bin("33 82 05 00 00 00 1E 02 58 FE D4 82 13 00 31 00 "
                                                "31 F1 00 00 00 00 00 00 EC"))
 
     def test_ParamPutResponse(self):
@@ -183,8 +183,8 @@ class TestMessages(unittest.TestCase):
         self.assertTrue(res.msg, b'\x01\x02\x03')
 
     def test_DataHeaderRequest(self):
-        req = DataHeaderRequest(123)
-        self.assertEqual(req.to_bytes(), _bin("33 7B 01 00 AF"))
+        req = DataHeaderRequest(130)
+        self.assertEqual(req.to_bytes(), _bin("33 82 01 00 B6"))
 
     def test_DataHeaderResponse(self):
         res = DataHeaderResponse()
@@ -193,8 +193,8 @@ class TestMessages(unittest.TestCase):
         self.assertEqual(res.start_time, datetime(2015, 5, 14, 23, 4, 53))
 
     def test_DataBodyRequest(self):
-        req = DataBodyRequest(123, 5)
-        self.assertEqual(req.to_bytes(), _bin("33 7B 02 05 B5"))
+        req = DataBodyRequest(130, 131)
+        self.assertEqual(req.to_bytes(), _bin("33 82 02 83 3A"))
 
     def test_DataBodyResponse(self):
         res = DataBodyResponse(10)
@@ -203,8 +203,8 @@ class TestMessages(unittest.TestCase):
         self.assertEqual(res.records, (1, -1, 3, 4, 5, 6, 7, 8, 9, 10))
 
     def test_ClockSetRequest(self):
-        req = ClockSetRequest(3, datetime(2015, 5, 14, 23, 4, 53))
-        self.assertEqual(req.to_bytes(), _bin("33 03 07 00 07 DF 05 0E 17 04 35 86"))
+        req = ClockSetRequest(130, datetime(2015, 5, 14, 23, 4, 53))
+        self.assertEqual(req.to_bytes(), _bin("33 82 07 00 07 DF 05 0E 17 04 35 05"))
 
     def test_ClockSetResponse(self):
         res = ClockSetResponse()
@@ -212,10 +212,10 @@ class TestMessages(unittest.TestCase):
         self.assertEqual(res.msg, b'\x55\xA3\xF8')
 
     def test_DevNumRequest(self):
-        req = DevNumRequest(2)
+        req = DevNumRequest(130)
         req.device_number = "11223344"
 
-        self.assertEqual(req.to_bytes(), _bin("33 02 0B 00 31 31 32 32 33 33 34 34 00 00 D4"))
+        self.assertEqual(req.to_bytes(), _bin("33 82 0B 00 31 31 32 32 33 33 34 34 00 00 54"))
 
     def test_DevNumResponse(self):
         res = DevNumResponse()
