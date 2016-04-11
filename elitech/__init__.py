@@ -222,3 +222,25 @@ class Device:
             time.sleep(self.wait_time)
 
         return res
+
+    def raw_send(self, request_bytes, response_length):
+        request = RequestMessage()
+        request.to_bytes = lambda : request_bytes
+
+        response = ResponseMessage()
+
+        response.msg = None
+        def __read(ser):
+            response.msg = ser.read(response_length)
+
+        response.read = __read
+
+        try:
+            self._ser.open()
+            self._talk(request, response)
+        finally:
+            self._ser.close()
+            time.sleep(self.wait_time)
+
+        return response.msg
+

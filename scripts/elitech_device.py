@@ -10,6 +10,8 @@ from elitech.msg import (
     TemperatureUnit,
 
 )
+from elitech.msg import _bin
+import six
 
 def main():
     args = parse_args()
@@ -23,6 +25,8 @@ def main():
         command_devinfo(args)
     elif(args.command == 'clock'):
         command_clock(args)
+    elif(args.command == 'raw'):
+        command_raw_send(args)
 
 def _convert_time(sec):
     hour = int(sec / 3600.0)
@@ -121,13 +125,30 @@ def command_clock(args):
         clock = None
     device.set_clock(dev_info.station_no, clock)
 
+def command_raw_send(args):
+    device = elitech.Device(args.serial_port)
+
+    request_bytes = _bin(args.req)
+
+    res = device.raw_send(request_bytes, args.res_len)
+
+    print("\nresponse length={}".format(len(res)))
+    for i, b in enumerate(res):
+        if six.PY2:
+            six.print_("{:02X} ".format(ord(b)), sep='', end='')
+        else:
+            six.print_("{:02X} ".format(b), end='')
+        if (i + 1) % 16 == 0:
+            six.print_()
+
+    six.print_()
 
 def parse_args():
     """
     :rtype: argparse.Namespace
     """
     parser = argparse.ArgumentParser('description elitech RC-4 data reader')
-    parser.add_argument('-c', "--command", choices=['init', 'get', 'simple-set', 'set', 'devinfo', 'clock'])
+    parser.add_argument('-c', "--command", choices=['init', 'get', 'simple-set', 'set', 'devinfo', 'clock', 'raw'])
     parser.add_argument('-i', "--interval", type=int)
     parser.add_argument("--upper_limit", type=float)
     parser.add_argument("--lower_limit", type=float)
@@ -142,6 +163,8 @@ def parse_args():
     parser.add_argument('--dev_num', type=str)
     parser.add_argument('--user_info', type=str)
     parser.add_argument('--page_size', type=int, help='for gommand get')
+    parser.add_argument('--req', type=str, help='for raw command')
+    parser.add_argument('--res_len', type=int, help='for raw command', default=1000)
     parser.add_argument('serial_port')
     return parser.parse_args()
 

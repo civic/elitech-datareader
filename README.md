@@ -125,6 +125,18 @@ $ elitech-datareader --command set --interval=10 --upper_limit=60.0 --lower_limi
 --temp_calibration=-1.5 --dev_num=1234567890 --user_info="RC4 Data Logger" /dev/tty.SLAB_USBtoUART
 ```
 
+### Debug raw communication
+
+Send raw request data. receive response data.
+
+```
+$ elitech-datareader --command raw --req="CC 00 06 00 D2" -res_len=4 /dev/tty.SLAB_USBtoUART
+
+response length=4
+55 01 01 32
+```
+
+
 Example(Python module)
 -------
 
