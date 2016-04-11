@@ -1,29 +1,37 @@
-Elitech RC4 DataReader
+Elitech RC4 / RC5 DataReader
 ====================================
 
 
 Description
 -----------
 
-This software is a data collecting tool, written in python for Temperature data logger RC-4.
+This software is a data collecting tool, written in python for Temperature data logger RC-4/RC-5.
 
-[Elitech RC-4](http://www.e-elitech.com/jingChuang3/shouYe.do?operate=doProductDetail&chanpinId=156) is a reasonable data logger.
+[Elitech RC-4](http://www.elitech.uk.com/temperature_logger/Elitech_UK__Mini_USB_Temperature_Data_logger_URC_4_149.html) / 
+[RC-5](http://www.e-elitech.com/jingChuang3/shouYe.do?operate=doProductDetail&chanpinId=156) 
+is a reasonable data logger.
 
-Enables to use RC-4 on Mac, Linux, Windows.
+
+Enables to use RC-4/RC-5 on Mac, Linux, Windows.
 
 Requirements
 ------------
 
 - Python2.7 or Python3.4
-- Silicon Labs CP210x USB-UART bridge VCP driver.  <http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx>
+- Serial Port Driver
+    - (for RC-4) Silicon Labs CP210x USB-UART bridge VCP driver.  <http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx>
+    - (for RC-5) CH340 Serial Driver [MacOSX](http://www.wch.cn/download/CH341SER_MAC_ZIP.html)
 - pySerial (data access library for serial port)
 
 
 Setup
 ------------
 
-1. Install CP210x USB-UART bridge VCP driver.  Download and install CP210x driver for your platform.
+1. Install Serial Port Driver.
+    - for RC-4: CP210x USB-UART bridge VCP driver.  Download and install CP210x driver for your platform.
  <http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx>
+    - for RC-5: CH340 Serial Driver [MacOSX](http://www.wch.cn/download/CH341SER_MAC_ZIP.html)
+
 2. install dependencies.
 
 ```
@@ -44,7 +52,8 @@ Example(Script)
 initialize. rec interval 10sec. set clock now.
 
 ```
-$ elitech-datareader --command simple-set --interval=10 /dev/tty.SLAB_USBtoUART
+$ elitech-datareader --command simple-set --interval=10 /dev/tty.SLAB_USBtoUART # RC-4 on macosx
+                                                      # /dev/tty.wchusbserialfd1430 # RC-5 on macosx
 ```
 
 ### Get data
@@ -63,6 +72,23 @@ $ elitech-datareader --command get /dev/tty.SLAB_USBtoUART
 5	2015-06-07 13:54:16	25.1
 6	2015-06-07 13:54:26	25.1
 ```
+
+Elitech device gets the data in units called "Page size".
+Page size is determined by the device model. RC4 is 100 and RC5 is 500.
+
+You can directly specify the page size, with an optional argument --page_size. (for debug)
+
+```
+$ elitech-datareader --command get --page_size=500 /dev/tty.SLAB_USBtoUART
+6
+1	2015-06-07 13:53:36	25.0
+2	2015-06-07 13:53:46	25.1
+3	2015-06-07 13:53:56	25.1
+4	2015-06-07 13:54:06	25.1
+5	2015-06-07 13:54:16	25.1
+6	2015-06-07 13:54:26	25.1
+```
+
 
 ### Get device information
 

@@ -111,21 +111,7 @@ class Device:
 
         return res
 
-    def get_data_header(self, target_station_no):
-        """
-        :rtype: DataHeaderResponse
-        """
-        try:
-            self._ser.open()
-            req = DataHeaderRequest(target_station_no)
-            res = self._talk(req, DataHeaderResponse())
-        finally:
-            self._ser.close()
-            time.sleep(self.wait_time)
-
-        return res
-
-    def get_data(self, callback=None):
+    def get_data(self, callback=None, page_size=None):
         """
         :type devinfo: DevInfoResponse
         :rtype:list[(int,datetime,float)]
@@ -133,7 +119,15 @@ class Device:
         devinfo = self.get_devinfo()
         header = self.get_data_header(devinfo.station_no)
 
-        page = int(math.ceil(header.rec_count / 100.0))
+        if page_size is None:
+            if devinfo.model_no == 40: # RC-4
+                page_size = 100
+            elif devinfo.model_no == 50: #RC-5
+                page_size = 500
+            else:
+                raise ValueError("Unknowm model_no (%d). can't decide page_size", devinfo.model_no)
+
+        page = int(math.ceil(header.rec_count / float(page_size)))
         dt = timedelta(hours=devinfo.rec_interval.hour,
                       minutes=devinfo.rec_interval.minute,
                       seconds=devinfo.rec_interval.second)
@@ -146,7 +140,7 @@ class Device:
             for p in range(page):
 
                 req = DataBodyRequest(devinfo.station_no, p)
-                count = 100 if (p+1) * 100 <= devinfo.rec_count else (devinfo.rec_count % 100)
+                count = page_size if (p+1) * page_size <= devinfo.rec_count else (devinfo.rec_count % page_size)
                 res = DataBodyResponse(count)
                 self._talk(req, res)
 
@@ -162,6 +156,20 @@ class Device:
             time.sleep(self.wait_time)
 
         return data_list
+
+    def get_data_header(self, target_station_no):
+        """
+        :rtype: DataHeaderResponse
+        """
+        try:
+            self._ser.open()
+            req = DataHeaderRequest(target_station_no)
+            res = self._talk(req, DataHeaderResponse())
+        finally:
+            self._ser.close()
+            time.sleep(self.wait_time)
+
+        return res
 
     def set_clock(self, station_no, set_time=None):
         """

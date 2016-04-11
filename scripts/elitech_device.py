@@ -51,7 +51,11 @@ def command_get(args):
         for line in data_list:
             print("{0}\t{1:%Y-%m-%d %H:%M:%S}\t{2:.1f}".format(*line))
 
-    device.get_data(callback=output)
+    if args.page_size:
+        device.get_data(callback=output, page_size=args.page_size)
+    else:
+        device.get_data(callback=output)
+
 
 def command_set(args):
     device = elitech.Device(args.serial_port)
@@ -137,6 +141,7 @@ def parse_args():
     parser.add_argument('--time', type=str)
     parser.add_argument('--dev_num', type=str)
     parser.add_argument('--user_info', type=str)
+    parser.add_argument('--page_size', type=int, help='for gommand get')
     parser.add_argument('serial_port')
     return parser.parse_args()
 
