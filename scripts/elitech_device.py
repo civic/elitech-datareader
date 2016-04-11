@@ -27,6 +27,8 @@ def main():
         command_clock(args)
     elif(args.command == 'raw'):
         command_raw_send(args)
+    elif(args.command == 'latest'):
+        command_latest(args)
 
 def _convert_time(sec):
     hour = int(sec / 3600.0)
@@ -60,6 +62,20 @@ def command_get(args):
     else:
         device.get_data(callback=output)
 
+def command_latest(args):
+    device = elitech.Device(args.serial_port)
+    device.init()
+
+    def output(latest):
+        if args.value_only:
+            print("{2:.1f}".format(*latest))
+        else:
+            print("{0}\t{1:%Y-%m-%d %H:%M:%S}\t{2:.1f}".format(*latest))
+
+    if args.page_size:
+        device.get_latest(callback=output, page_size=args.page_size)
+    else:
+        device.get_latest(callback=output)
 
 def command_set(args):
     device = elitech.Device(args.serial_port)
@@ -148,7 +164,7 @@ def parse_args():
     :rtype: argparse.Namespace
     """
     parser = argparse.ArgumentParser('description elitech RC-4 data reader')
-    parser.add_argument('-c', "--command", choices=['init', 'get', 'simple-set', 'set', 'devinfo', 'clock', 'raw'])
+    parser.add_argument('-c', "--command", choices=['init', 'get', 'latest', 'simple-set', 'set', 'devinfo', 'clock', 'raw'])
     parser.add_argument('-i', "--interval", type=int)
     parser.add_argument("--upper_limit", type=float)
     parser.add_argument("--lower_limit", type=float)
@@ -165,6 +181,7 @@ def parse_args():
     parser.add_argument('--page_size', type=int, help='for gommand get')
     parser.add_argument('--req', type=str, help='for raw command')
     parser.add_argument('--res_len', type=int, help='for raw command', default=1000)
+    parser.add_argument('--value_only', help='for latest command', action='store_true')
     parser.add_argument('serial_port')
     return parser.parse_args()
 
