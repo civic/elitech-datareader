@@ -244,3 +244,49 @@ class Device:
 
         return response.msg
 
+    def get_latest(self, callback=None, page_size=None):
+        """
+        :type devinfo: DevInfoResponse
+        :rtype:list[(int,datetime,float)]
+        """
+        devinfo = self.get_devinfo()
+        header = self.get_data_header(devinfo.station_no)
+
+        if page_size is None:
+            if devinfo.model_no == 40: # RC-4
+                page_size = 100
+            elif devinfo.model_no == 50: #RC-5
+                page_size = 500
+            else:
+                raise ValueError("Unknowm model_no (%d). can't decide page_size", devinfo.model_no)
+
+        page = int(math.ceil(header.rec_count / float(page_size)))
+        dt = timedelta(hours=devinfo.rec_interval.hour,
+                       minutes=devinfo.rec_interval.minute,
+                       seconds=devinfo.rec_interval.second)
+
+
+        base_time = devinfo.start_time + dt * (header.rec_count-1)
+
+        no = header.rec_count
+        try:
+            self._ser.open()
+
+            p = page - 1
+            req = DataBodyRequest(devinfo.station_no, p)
+            count = page_size if (p+1) * page_size <= devinfo.rec_count else (devinfo.rec_count % page_size)
+
+            res = DataBodyResponse(count)
+            self._talk(req, res)
+
+            rec = res.records[-1]
+            latest = (no, base_time, rec/10.0)
+            if callback is not None:
+                callback(latest)
+        finally:
+            self._ser.close()
+            time.sleep(self.wait_time)
+
+        return latest
+
+
