@@ -65,6 +65,7 @@ class TestMessages(unittest.TestCase):
                               "32 32 33 33 11 31 00 31 F1 00 00 00 00 00 00 B3"
                               )))
         self.assertEqual(res.station_no, 130)
+        self.assertEqual(res.model_no, 40)
         self.assertEqual(res.rec_interval, time(0, 0, 30))
         self.assertEqual(res.upper_limit, 60.0)
         self.assertEqual(res.lower_limit, -30.0)

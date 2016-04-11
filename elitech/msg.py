@@ -135,6 +135,7 @@ class DevInfoRequest(RequestMessage):
 class DevInfoResponse(ResponseMessage):
     """
     :type station_no: int
+    :type model_no: int
     :type rec_interval: time
     :type upper_limit: float
     :type lower_limit: float
@@ -156,6 +157,7 @@ class DevInfoResponse(ResponseMessage):
     def __init__(self):
         self.station_no = None
         self.rec_interval = None
+        self.model_no = None
         self.upper_limit = None
         self.lower_limit = None
         self.last_online = None
@@ -178,12 +180,14 @@ class DevInfoResponse(ResponseMessage):
         """
         res = ser.read(160)
 
-        (_, station_no, _, rec_interval, upper_limit, lower_limit, last_online, work_sts,
+        (_, station_no, _, model_no, _, rec_interval, upper_limit, lower_limit, last_online, work_sts,
          start_time, stp_btn, _, rec_count, current, user_info, dev_num, delay, tone_set,
          alarm, temp_unit, temp_calib, _) = unpack(
             '>1s'
             'B'  # station no
-            '3s'
+            '1s'
+            'B'  # model_no
+            '1s'
             '3s'  # record interval hh mm ss
             'h'  # upper limit
             'h'  # lower limit
@@ -205,6 +209,7 @@ class DevInfoResponse(ResponseMessage):
             res)
 
         self.station_no = station_no
+        self.model_no = model_no
         self.rec_interval = _interval_unpack(rec_interval)
         self.upper_limit = upper_limit / 10.0
         self.lower_limit = lower_limit / 10.0
@@ -219,7 +224,7 @@ class DevInfoResponse(ResponseMessage):
         except UnicodeDecodeError as e:
             self.user_info = ""
         try:
-            self.dev_num = dev_num.decode("utf-8")
+            self.dev_num = dev_num.decode("utf-8").rstrip('\0x00')
         except UnicodeDecodeError as e:
             self.dev_num = ""
 
