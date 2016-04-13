@@ -95,7 +95,7 @@ $ elitech-datareader --command get --page_size=500 /dev/tty.SLAB_USBtoUART
 $ elitech-datareader --command latest /dev/tty.SLAB_USBtoUART
 6	2015-06-07 13:54:26	25.1
 
-$ elitech-datareader --command latest --only-value /dev/tty.SLAB_USBtoUART
+$ elitech-datareader --command latest --value_only /dev/tty.SLAB_USBtoUART
 25.2
 ```
 
