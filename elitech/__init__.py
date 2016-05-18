@@ -40,7 +40,7 @@ import six
 class Device:
     def __init__(self, serial_port):
         if serial_port is not None:
-            self._ser = serial.Serial(serial_port, 115200, timeout=3)
+            self._ser = serial.Serial(serial_port, baudrate=115000, timeout=3)
             self._ser.close()
         self.debug = False
         self.wait_time = 0.5
