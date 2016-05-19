@@ -20,7 +20,7 @@ Requirements
 - Python2.7 or Python3.4
 - Serial Port Driver
     - (for RC-4) Silicon Labs CP210x USB-UART bridge VCP driver.  <http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx>
-    - (for RC-5) CH340 Serial Driver [MacOSX](http://www.wch.cn/download/CH341SER_MAC_ZIP.html)
+    - (for RC-5) CH340 Serial Driver [MacOSX](http://www.wch.cn/download/CH341SER_MAC_ZIP.html) (mac driver is unstable)
 - pySerial (data access library for serial port)
 
 
@@ -30,7 +30,7 @@ Setup
 1. Install Serial Port Driver.
     - for RC-4: CP210x USB-UART bridge VCP driver.  Download and install CP210x driver for your platform.
  <http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx>
-    - for RC-5: CH340 Serial Driver [MacOSX](http://www.wch.cn/download/CH341SER_MAC_ZIP.html)
+    - for RC-5: CH340 Serial Driver [MacOSX](http://www.wch.cn/download/CH341SER_MAC_ZIP.html)(mac driver is unstable)
 
 2. install dependencies.
 
@@ -146,6 +146,14 @@ response length=4
 55 01 01 32
 ```
 
+
+### Note (serial port)
+
+If comunication unstable, then try `--ser_baudrate` and `--ser_timeout` option.
+
+```
+$ elitech-datareader --command devinfo --ser_baudrate 115200 --ser_timeout=10 /dev/tty.SLAB_USBtoUART
+```
 
 Example(Python module)
 -------
