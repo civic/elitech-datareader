@@ -178,7 +178,7 @@ def parse_args():
     parser.add_argument('--time', type=str)
     parser.add_argument('--dev_num', type=str)
     parser.add_argument('--user_info', type=str)
-    parser.add_argument('--page_size', type=int, help='for gommand get')
+    parser.add_argument('--page_size', type=int, help='for command get')
     parser.add_argument('--req', type=str, help='for raw command')
     parser.add_argument('--res_len', type=int, help='for raw command', default=1000)
     parser.add_argument('--value_only', help='for latest command', action='store_true')
