@@ -163,7 +163,7 @@ def parse_args():
     """
     :rtype: argparse.Namespace
     """
-    parser = argparse.ArgumentParser('description elitech RC-4 data reader')
+    parser = argparse.ArgumentParser('description Elitech RC-4 / RC-5 data reader')
     parser.add_argument('-c', "--command", choices=['init', 'get', 'latest', 'simple-set', 'set', 'devinfo', 'clock', 'raw'])
     parser.add_argument('-i', "--interval", type=int)
     parser.add_argument("--upper_limit", type=float)
