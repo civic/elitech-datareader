@@ -37,7 +37,7 @@ def _convert_time(sec):
     return datetime.time(hour=hour, minute=min, second=sec)
 
 def command_simpleset(args):
-    device = elitech.Device(args.serial_port)
+    device = elitech.Device(args.serial_port, args.ser_baudrate, args.ser_timeout)
     device.init()
     dev_info = device.get_devinfo()
 
@@ -50,7 +50,7 @@ def command_simpleset(args):
     device.update(param_put)
 
 def command_get(args):
-    device = elitech.Device(args.serial_port)
+    device = elitech.Device(args.serial_port, args.ser_baudrate, args.ser_timeout)
     device.init()
 
     def output(data_list):
@@ -63,7 +63,7 @@ def command_get(args):
         device.get_data(callback=output)
 
 def command_latest(args):
-    device = elitech.Device(args.serial_port)
+    device = elitech.Device(args.serial_port, args.ser_baudrate, args.ser_timeout)
     device.init()
 
     def output(latest):
@@ -78,7 +78,7 @@ def command_latest(args):
         device.get_latest(callback=output)
 
 def command_set(args):
-    device = elitech.Device(args.serial_port)
+    device = elitech.Device(args.serial_port, args.ser_baudrate, args.ser_timeout)
     device.init()
     dev_info = device.get_devinfo()
     param_put = dev_info.to_param_put()
@@ -126,14 +126,14 @@ def command_set(args):
         print("{}={}".format("user_info", args.user_info))
 
 def command_devinfo(args):
-    device = elitech.Device(args.serial_port)
+    device = elitech.Device(args.serial_port, args.ser_baudrate, args.ser_timeout)
     device.init()
     dev_info = device.get_devinfo()
     for k,v in vars(dev_info).items():
         print("{}={}".format(k, v))
 
 def command_clock(args):
-    device = elitech.Device(args.serial_port)
+    device = elitech.Device(args.serial_port, args.ser_baudrate, args.ser_timeout)
     dev_info = device.get_devinfo()
     if args.time:
         clock = datetime.datetime.strptime(args.time, '%Y%m%d%H%M%S')
@@ -142,7 +142,7 @@ def command_clock(args):
     device.set_clock(dev_info.station_no, clock)
 
 def command_raw_send(args):
-    device = elitech.Device(args.serial_port)
+    device = elitech.Device(args.serial_port, args.ser_baudrate, args.ser_timeout)
 
     request_bytes = _bin(args.req)
 
@@ -182,6 +182,8 @@ def parse_args():
     parser.add_argument('--req', type=str, help='for raw command')
     parser.add_argument('--res_len', type=int, help='for raw command', default=1000)
     parser.add_argument('--value_only', help='for latest command', action='store_true')
+    parser.add_argument('--ser_baudrate', help='serial port baudrate default=115000', default=115000, type=int)
+    parser.add_argument('--ser_timeout', help='serial port reading timeout sec', default=5, type=int)
     parser.add_argument('serial_port')
     return parser.parse_args()
 
