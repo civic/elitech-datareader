@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding: utf-8
 
 import argparse
 import elitech
@@ -124,8 +125,10 @@ def command_set(args):
         print("{}={}".format("dev_num", args.dev_num))
 
     if args.user_info:
+        if type(args.user_info) == six.binary_type:
+            args.user_info = args.user_info.decode("utf-8")
         device.set_user_info(station_no, args.user_info)
-        print("{}={}".format("user_info", args.user_info))
+        print(u"{}={}".format("user_info", args.user_info))
 
 def command_devinfo(args):
     device = elitech.Device(args.serial_port, args.ser_baudrate, args.ser_timeout)
@@ -134,7 +137,7 @@ def command_devinfo(args):
     dev_info = device.get_devinfo()
     for k,v in sorted(vars(dev_info).items()):
         if k.startswith("_"): continue
-        print("{}={}".format(k, v))
+        print(u"{}={}".format(k, v))
 
 def command_clock(args):
     device = elitech.Device(args.serial_port, args.ser_baudrate, args.ser_timeout)

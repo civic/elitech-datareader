@@ -1,3 +1,5 @@
+# coding: utf-8
+
 __author__ = 'civic'
 
 from struct import unpack, pack
