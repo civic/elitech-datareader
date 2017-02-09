@@ -104,8 +104,9 @@ $ elitech-datareader --command latest --value_only /dev/tty.SLAB_USBtoUART
 
 get device information.
 
+
 ```
-$ elitech-datareader --command devinfo /dev/tty.SLAB_USBtoUART
+$ elitech-datareader --command devinfo --encode=utf8 /dev/tty.SLAB_USBtoUART
 station_no=3
 last_online=2015-06-09 01:13:13
 temp_unit=TemperatureUnit.C
@@ -125,6 +126,13 @@ user_info=RC-4 Data Logger
 dev_num=9900112233
 ```
 
+`user_info` is multibytes text. Use --encode option. (default UTF8)
+
+On Elitech Software (Logger Data Management Software V2.0, Rc Logger), user info is encoded various charsets. (GBK, MS932).
+
+see. <https://github.com/civic/elitech-datareader/issues/17>
+
+
 ### Parameter set
 
 set device parameter.
@@ -132,8 +140,10 @@ set device parameter.
 ```
 $ elitech-datareader --command set --interval=10 --upper_limit=60.0 --lower_limit=-30.0 \
 --station_no=1 --stop_button=y --delay=0.0 --tone_set=y --alarm=x --temp_unit=C \
---temp_calibration=-1.5 --dev_num=1234567890 --user_info="RC4 Data Logger" /dev/tty.SLAB_USBtoUART
+--temp_calibration=-1.5 --dev_num=1234567890 --encode=utf8 --user_info="UserInfoユーザー情報" /dev/tty.SLAB_USBtoUART
 ```
+
+`user_info` is multibytes text. Use --encode option. (default UTF8)
 
 ### Debug raw communication
 
