@@ -21,6 +21,8 @@ Requirements
 - Serial Port Driver
     - (for RC-4) Silicon Labs CP210x USB-UART bridge VCP driver.  <http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx>
     - (for RC-5) CH340 Serial Driver [MacOSX](http://www.wch.cn/download/CH341SER_MAC_ZIP.html) (mac driver is unstable)
+        - for sierra Signed Mac OS Driver  
+            <https://blog.sengotta.net/signed-mac-os-driver-for-winchiphead-ch340-serial-bridge/>
 - pySerial (data access library for serial port)
 
 
@@ -31,6 +33,8 @@ Setup
     - for RC-4: CP210x USB-UART bridge VCP driver.  Download and install CP210x driver for your platform.
  <http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx>
     - for RC-5: CH340 Serial Driver [MacOSX](http://www.wch.cn/download/CH341SER_MAC_ZIP.html)(mac driver is unstable)
+        - for sierra Signed Mac OS Driver  
+            <https://blog.sengotta.net/signed-mac-os-driver-for-winchiphead-ch340-serial-bridge/>
 
 2. install dependencies.
 
@@ -130,6 +134,9 @@ dev_num=9900112233
 
 On Elitech Software (Logger Data Management Software V2.0, Rc Logger), user info is encoded various charsets. (GBK, MS932).
 
+```
+$ elitech-datareader --command devinfo --encode=gbk /dev/tty.SLAB_USBtoUART  # for mac os Rc Logger software
+```
 see. <https://github.com/civic/elitech-datareader/issues/17>
 
 
