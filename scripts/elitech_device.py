@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding: utf-8
 
 import argparse
 import elitech
@@ -12,6 +13,7 @@ from elitech.msg import (
 )
 from elitech.msg import _bin
 import six
+import os
 
 def main():
     args = parse_args()
@@ -79,6 +81,7 @@ def command_latest(args):
 
 def command_set(args):
     device = elitech.Device(args.serial_port, args.ser_baudrate, args.ser_timeout)
+    device.encode = args.encode
     device.init()
     dev_info = device.get_devinfo()
     param_put = dev_info.to_param_put()
@@ -122,15 +125,19 @@ def command_set(args):
         print("{}={}".format("dev_num", args.dev_num))
 
     if args.user_info:
+        if type(args.user_info) == six.binary_type:
+            args.user_info = args.user_info.decode("utf-8")
         device.set_user_info(station_no, args.user_info)
-        print("{}={}".format("user_info", args.user_info))
+        print(u"{}={}".format("user_info", args.user_info))
 
 def command_devinfo(args):
     device = elitech.Device(args.serial_port, args.ser_baudrate, args.ser_timeout)
+    device.encode = args.encode
     device.init()
     dev_info = device.get_devinfo()
-    for k,v in vars(dev_info).items():
-        print("{}={}".format(k, v))
+    for k,v in sorted(vars(dev_info).items()):
+        if k.startswith("_"): continue
+        print(u"{}={}".format(k, v))
 
 def command_clock(args):
     device = elitech.Device(args.serial_port, args.ser_baudrate, args.ser_timeout)
@@ -178,6 +185,7 @@ def parse_args():
     parser.add_argument('--time', type=str)
     parser.add_argument('--dev_num', type=str)
     parser.add_argument('--user_info', type=str)
+    parser.add_argument('--encode', type=str, default='utf8', help='user_info encode')
     parser.add_argument('--page_size', type=int, help='for command get')
     parser.add_argument('--req', type=str, help='for raw command')
     parser.add_argument('--res_len', type=int, help='for raw command', default=1000)

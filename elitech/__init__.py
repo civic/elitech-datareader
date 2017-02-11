@@ -44,6 +44,7 @@ class Device:
             self._ser.close()
         self.debug = False
         self.wait_time = 0.5
+        self.encode = 'utf8'
 
     def _talk(self, request, response):
         """
@@ -90,7 +91,7 @@ class Device:
         req = DevInfoRequest()
         try:
             self._ser.open()
-            res = self._talk(req, DevInfoResponse())
+            res = self._talk(req, DevInfoResponse(self.encode))
         finally:
             self._ser.close()
             time.sleep(self.wait_time)
@@ -214,7 +215,7 @@ class Device:
         """
         try:
             self._ser.open()
-            req = UserInfoRequest(station_no)
+            req = UserInfoRequest(station_no, self.encode)
             req.user_info = user_info
             res = self._talk(req, UserInfoResponse())
         finally:

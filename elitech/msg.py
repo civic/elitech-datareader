@@ -1,3 +1,5 @@
+# coding: utf-8
+
 __author__ = 'civic'
 
 from struct import unpack, pack
@@ -154,7 +156,7 @@ class DevInfoResponse(ResponseMessage):
     :type temp_calibration: float
     """
 
-    def __init__(self):
+    def __init__(self, encode='utf8'):
         self.station_no = None
         self.rec_interval = None
         self.model_no = None
@@ -173,6 +175,7 @@ class DevInfoResponse(ResponseMessage):
         self.alarm = None
         self.temp_unit = None
         self.temp_calibration = None
+        self._encode = encode
 
     def read(self, ser):
         """
@@ -220,7 +223,7 @@ class DevInfoResponse(ResponseMessage):
         self.rec_count = rec_count
         self.current = _datetime_unpack(current)
         try:
-            self.user_info = user_info.decode("utf-8").rstrip("\x00")
+            self.user_info = user_info.decode(self._encode).rstrip("\x00")
         except UnicodeDecodeError as e:
             self.user_info = ""
         try:
@@ -498,9 +501,10 @@ class UserInfoRequest(RequestMessage):
     :type user_info: str
     """
 
-    def __init__(self, target_station_no):
+    def __init__(self, target_station_no, encode='utf8'):
         self.target_station_no = target_station_no
         self.user_info = ""
+        self._encode=encode
 
     def to_bytes(self):
         write_bytes = pack(
@@ -511,7 +515,7 @@ class UserInfoRequest(RequestMessage):
             0x33,
             self.target_station_no,
             _bin('09 00'),
-            self.user_info.encode("utf8")[:100],
+            self.user_info.encode(self._encode)[:100],
         )
 
         ba = _append_checksum(write_bytes)

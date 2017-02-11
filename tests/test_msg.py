@@ -1,4 +1,4 @@
-# coding: utf8
+# coding: utf-8
 
 __author__ = 'civic'
 
@@ -83,6 +83,35 @@ class TestMessages(unittest.TestCase):
         self.assertEqual(res.temp_unit, TemperatureUnit.C)
         self.assertEqual(res.temp_calibration, -1.5)
 
+    def test_DevInfoResponseUTF8(self):
+        res = DevInfoResponse()
+        res.read(BytesIO(_bin("55 82 01 28 0A 00 00 1E 02 58 FE D4 07 DF 05 0E "
+                              "16 2F 04 02 07 DF 05 0E 07 38 0E 13 64 00 09 07 "
+                              "DF 05 0E 16 2F 36 E3 81 82 E3 81 84 E3 81 86 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 39 39 30 30 31 31 "
+                              "32 32 33 33 11 31 00 31 F1 00 00 00 00 00 00 B3"
+                              )))
+        self.assertEqual(res.user_info, u"あいう")
+
+    def test_DevInfoResponseMS932(self):
+        res = DevInfoResponse('MS932')
+        res.read(BytesIO(_bin("55 82 01 28 0A 00 00 1E 02 58 FE D4 07 DF 05 0E "
+                              "16 2F 04 02 07 DF 05 0E 07 38 0E 13 64 00 09 07 "
+                              "DF 05 0E 16 2F 36 82 A0 82 A2 82 A4 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                              "00 00 00 00 00 00 00 00 00 00 39 39 30 30 31 31 "
+                              "32 32 33 33 11 31 00 31 F1 00 00 00 00 00 00 B3"
+                              )))
+        self.assertEqual(res.user_info, u"あいう")
     def test_DevInfoResponse_devnum_default_is_FF(self):
         res = DevInfoResponse()
         res.read(BytesIO(_bin("55 02 01 28 0A 00 00 1E 02 58 FE D4 07 DF 05 0E "
@@ -239,6 +268,40 @@ class TestMessages(unittest.TestCase):
                                               "38 5F 5F 5F 5F 2E 5F 5F 5F 5F "
                                               "39 5F 5F 5F 5F 2E 5F 5F 5F 5F "
                                               "C6"
+                                              ))
+    def test_UserInfoRequestUTF8(self):
+        req = UserInfoRequest(1)
+        req.user_info = u"あいう"
+
+        self.assertEqual(req.to_bytes(), _bin("33 01 09 00 "
+                                              "E3 81 82 E3 81 84 E3 81 86 00 "
+                                              "00 00 00 00 00 00 00 00 00 00 "
+                                              "00 00 00 00 00 00 00 00 00 00 "
+                                              "00 00 00 00 00 00 00 00 00 00 "
+                                              "00 00 00 00 00 00 00 00 00 00 "
+                                              "00 00 00 00 00 00 00 00 00 00 "
+                                              "00 00 00 00 00 00 00 00 00 00 "
+                                              "00 00 00 00 00 00 00 00 00 00 "
+                                              "00 00 00 00 00 00 00 00 00 00 "
+                                              "00 00 00 00 00 00 00 00 00 00 "
+                                              "F5"
+                                              ))
+    def test_UserInfoRequestMS932(self):
+        req = UserInfoRequest(1, 'MS932')
+        req.user_info = u"あいうえ"
+
+        self.assertEqual(req.to_bytes(), _bin("33 01 09 00 "
+                                              "82 A0 82 A2 82 A4 82 A6 00 00 "
+                                              "00 00 00 00 00 00 00 00 00 00 "
+                                              "00 00 00 00 00 00 00 00 00 00 "
+                                              "00 00 00 00 00 00 00 00 00 00 "
+                                              "00 00 00 00 00 00 00 00 00 00 "
+                                              "00 00 00 00 00 00 00 00 00 00 "
+                                              "00 00 00 00 00 00 00 00 00 00 "
+                                              "00 00 00 00 00 00 00 00 00 00 "
+                                              "00 00 00 00 00 00 00 00 00 00 "
+                                              "00 00 00 00 00 00 00 00 00 00 "
+                                              "D1"
                                               ))
 
     def test_UserInfoResponse(self):

@@ -94,7 +94,7 @@ j   stop button 13:permit / 31:prohibit
 k   ?
 l   record count: uint16
 m   current time(datetime)
-n   User information 100 char
+n   User information 100 char (encode: OS dependent)
 o   number 10char
 p   delaytime 00:0h / 01:0.5h / 10:1.0h / 11:1.5h / 20:2.0h / 21: 2.5h
 q   tone set 13:permit / 31:prohibit
