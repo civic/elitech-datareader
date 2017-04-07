@@ -327,7 +327,7 @@ class ParamPutRequest(RequestMessage):
             int(self.lower_limit * 10.0),
             self.update_station_no,
             self.stop_button.value,
-            int(self.delay) * 16 + (5 if (self.delay % 1 != 0) else 0),
+            self.delay_value(self.delay),
             self.tone_set.value,
             self.alarm.value,
             self.temp_unit.value,
@@ -337,7 +337,9 @@ class ParamPutRequest(RequestMessage):
 
         ba = _append_checksum(write_bytes)
         return ba
-
+    def delay_value(self, delay):
+        # 0.0=>0x00, 0.5=>0x01, 1.0=>0x10, 1.5=>0x11...
+        return int(delay) * 16 + (1 if ((delay * 10) % 10 >= 5) else 0)
 
 class ParamPutResponse(ResponseMessage):
     def __init__(self):

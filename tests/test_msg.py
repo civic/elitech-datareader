@@ -207,6 +207,20 @@ class TestMessages(unittest.TestCase):
         self.assertEqual(req.to_bytes(), _bin("33 82 05 00 00 00 1E 02 58 FE D4 82 13 00 31 00 "
                                                "31 F1 00 00 00 00 00 00 EC"))
 
+    def test_deleay_value(self):
+        req = ParamPutRequest(130)
+        self.assertEqual(req.delay_value(0.0), 0x00)
+        self.assertEqual(req.delay_value(0.5), 0x01)
+        self.assertEqual(req.delay_value(1.0), 0x10)
+        self.assertEqual(req.delay_value(1.5), 0x11)
+        self.assertEqual(req.delay_value(2.0), 0x20)
+        self.assertEqual(req.delay_value(2.5), 0x21)
+
+        # invalid parameter
+        self.assertEqual(req.delay_value(2.3), 0x20)
+        self.assertEqual(req.delay_value(2.8), 0x21)
+        self.assertEqual(req.delay_value(3.0), 0x30)
+
     def test_ParamPutResponse(self):
         res = ParamPutResponse()
         res.read(BytesIO(_bin("01 02 03")))
