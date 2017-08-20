@@ -38,7 +38,7 @@ from .msg import (
 import six
 
 class Device:
-    def __init__(self, serial_port, baudrate=115000, timeout=5):
+    def __init__(self, serial_port, baudrate=115200, timeout=5):
         if serial_port is not None:
             self._ser = serial.Serial(serial_port, baudrate=baudrate, timeout=timeout)
             self._ser.close()
