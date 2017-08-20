@@ -251,6 +251,8 @@ class Device:
         :rtype:list[(int,datetime,float)]
         """
         devinfo = self.get_devinfo()
+        if devinfo.rec_count == 0:
+            return (None, None, None)
         header = self.get_data_header(devinfo.station_no)
 
         if page_size is None:
