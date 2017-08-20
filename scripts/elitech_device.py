@@ -190,7 +190,7 @@ def parse_args():
     parser.add_argument('--req', type=str, help='for raw command')
     parser.add_argument('--res_len', type=int, help='for raw command', default=1000)
     parser.add_argument('--value_only', help='for latest command', action='store_true')
-    parser.add_argument('--ser_baudrate', help='serial port baudrate default=115000', default=115000, type=int)
+    parser.add_argument('--ser_baudrate', help='serial port baudrate default=115200', default=115200, type=int)
     parser.add_argument('--ser_timeout', help='serial port reading timeout sec', default=5, type=int)
     parser.add_argument('serial_port')
     return parser.parse_args()
