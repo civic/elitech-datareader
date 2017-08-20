@@ -376,3 +376,33 @@ class DeviceTest(unittest.TestCase):
             expect.append((n+1, devinfo.start_time + dt*n, n / 10.0))
 
         self.assertEqual(res, (110, devinfo.start_time + dt*109, 10.9))
+
+    def test_get_latest_if_rec_count_zero(self):
+        """ rec_count == 0の時にエラーにならないこと
+        """
+        device = elitech.Device(None)
+
+        def callback(length, ba):
+            if ba[0] == 0xCC:
+                # devinfo
+                return _bin("55 01 01 28 0A 01 02 03 02 58 FE D4 07 DF 0A 01 "
+                            "00 00 00 02 07 DF 0A 01 00 00 00 13 64 00 00 07 "
+                            "DF 05 0E 16 2F 36 52 43 2D 34 20 44 61 74 61 20 "
+                            "4C 6F 67 67 65 72 00 00 00 00 00 00 00 00 00 00 "
+                            "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                            "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                            "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                            "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                            "00 00 00 00 00 00 00 00 00 00 39 39 30 30 31 31 "
+                            "32 32 33 33 11 31 00 31 F1 00 00 00 00 00 00 FF"
+                            )
+            elif ba[0] == 0x33 and ba[2] == 0x01:
+                # 温度データヘッダ
+                return _append_checksum(_bin("55 00 00 07 DF 0A 01 00 00 00"))
+            raise ValueError("invalid request data length")
+
+        device._ser = DummySerial(None, callback=callback)
+
+        res = device.get_latest()
+        self.assertEqual(res, (None, None, None))
+
