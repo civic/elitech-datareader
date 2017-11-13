@@ -48,6 +48,12 @@ OR pip
 $ pip install elitech-datareader
 ```
 
+3. Linux: Add yourself to the dialout group. Restart required.
+```
+sudo usermod -a -G dialout $USER
+```
+
+
 Example(Script)
 --------------
 
