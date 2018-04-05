@@ -123,12 +123,17 @@ class Device:
         if page_size is None:
             if devinfo.model_no == 40: # RC-4
                 page_size = 100
+                data_size = 1
+            elif devinfo.model_no == 42: #RC-4HC
+                page_size = 200
+                data_size = 2
             elif devinfo.model_no == 50: #RC-5
                 page_size = 500
+                data_size = 1
             else:
                 raise ValueError("Unknowm model_no (%d). can't decide page_size", devinfo.model_no)
 
-        page = int(math.ceil(header.rec_count / float(page_size)))
+        page = int(math.ceil(header.rec_count * data_size / float(page_size)))
         dt = timedelta(hours=devinfo.rec_interval.hour,
                       minutes=devinfo.rec_interval.minute,
                       seconds=devinfo.rec_interval.second)
@@ -141,14 +146,20 @@ class Device:
             for p in range(page):
 
                 req = DataBodyRequest(devinfo.station_no, p)
-                count = page_size if (p+1) * page_size <= devinfo.rec_count else (devinfo.rec_count % page_size)
+                count = page_size if (p+1) * page_size <= devinfo.rec_count * data_size else (devinfo.rec_count * data_size % page_size)
                 res = DataBodyResponse(count)
                 self._talk(req, res)
 
-                for rec in res.records:
-                    data_list.append((no, base_time, rec/10.0))
-                    no += 1
-                    base_time += dt
+                if devinfo.model_no == 42:
+                    for rec_temp, rec_humi in zip(*[iter(res.records)] * 2):
+                        data_list.append((no, base_time, rec_temp/10.0, rec_humi/10.0))
+                        no += 1
+                        base_time += dt
+                else:
+                    for rec in res.records:
+                        data_list.append((no, base_time, rec/10.0))
+                        no += 1
+                        base_time += dt
                 if callback is not None:
                     callback(data_list)
                     data_list = []
@@ -256,12 +267,17 @@ class Device:
         if page_size is None:
             if devinfo.model_no == 40: # RC-4
                 page_size = 100
+                data_size = 1
+            elif devinfo.model_no == 42: #RC-4HC
+                page_size = 200
+                data_size = 2
             elif devinfo.model_no == 50: #RC-5
                 page_size = 500
+                data_size = 1
             else:
                 raise ValueError("Unknowm model_no (%d). can't decide page_size", devinfo.model_no)
 
-        page = int(math.ceil(header.rec_count / float(page_size)))
+        page = int(math.ceil(header.rec_count * data_size / float(page_size)))
         dt = timedelta(hours=devinfo.rec_interval.hour,
                        minutes=devinfo.rec_interval.minute,
                        seconds=devinfo.rec_interval.second)
@@ -275,13 +291,17 @@ class Device:
 
             p = page - 1
             req = DataBodyRequest(devinfo.station_no, p)
-            count = page_size if (p+1) * page_size <= devinfo.rec_count else (devinfo.rec_count % page_size)
+            count = page_size if (p+1) * page_size <= devinfo.rec_count * data_size else (devinfo.rec_count * data_size % page_size)
 
             res = DataBodyResponse(count)
             self._talk(req, res)
 
-            rec = res.records[-1]
-            latest = (no, base_time, rec/10.0)
+            if devinfo.model_no == 42:
+                rec_temp, rec_humi = res.records[-2:]
+                latest = (no, base_time, rec_temp/10.0, rec_humi/10.0)
+            else:
+                rec = res.records[-1]
+                latest = (no, base_time, rec/10.0)
             if callback is not None:
                 callback(latest)
         finally:
