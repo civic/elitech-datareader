@@ -76,10 +76,10 @@ def command_latest(args):
             if args.value_only:
                 print("{2:.1f}".format(*latest))
             else:
-                print("{2:.1f}\t{3:.1f}".format(*latest))
+                print("{0}\t{1:%Y-%m-%d %H:%M:%S}\t{2:.1f}".format(*latest))
         elif len(latest) == 4:
             if args.value_only:
-                print("{0}\t{1:%Y-%m-%d %H:%M:%S}\t{2:.1f}".format(*latest))
+                print("{2:.1f}\t{3:.1f}".format(*latest))
             else:
                 print("{0}\t{1:%Y-%m-%d %H:%M:%S}\t{2:.1f}\t{3:.1f}".format(*latest))
 
