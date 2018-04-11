@@ -57,7 +57,10 @@ def command_get(args):
 
     def output(data_list):
         for line in data_list:
-            print("{0}\t{1:%Y-%m-%d %H:%M:%S}\t{2:.1f}".format(*line))
+            if len(line) == 3:
+                print("{0}\t{1:%Y-%m-%d %H:%M:%S}\t{2:.1f}".format(*line))
+            elif len(line) == 4:
+                print("{0}\t{1:%Y-%m-%d %H:%M:%S}\t{2:.1f}\t{3:.1f}".format(*line))
 
     if args.page_size:
         device.get_data(callback=output, page_size=args.page_size)
@@ -69,10 +72,16 @@ def command_latest(args):
     device.init()
 
     def output(latest):
-        if args.value_only:
-            print("{2:.1f}".format(*latest))
-        else:
-            print("{0}\t{1:%Y-%m-%d %H:%M:%S}\t{2:.1f}".format(*latest))
+        if len(latest) == 3:
+            if args.value_only:
+                print("{2:.1f}".format(*latest))
+            else:
+                print("{0}\t{1:%Y-%m-%d %H:%M:%S}\t{2:.1f}".format(*latest))
+        elif len(latest) == 4:
+            if args.value_only:
+                print("{2:.1f}\t{3:.1f}".format(*latest))
+            else:
+                print("{0}\t{1:%Y-%m-%d %H:%M:%S}\t{2:.1f}\t{3:.1f}".format(*latest))
 
     if args.page_size:
         device.get_latest(callback=output, page_size=args.page_size)
@@ -115,6 +124,12 @@ def command_set(args):
 
     if args.temp_calibration is not None:
         param_put.temp_calibration = float(args.temp_calibration)
+    if args.humi_upper_limit:
+        param_put.humi_upper_limit = args.humi_upper_limit
+    if args.humi_lower_limit:
+        param_put.humi_lower_limit = args.humi_lower_limit
+    if args.humi_calibration:
+        param_put.humi_calibration = float(args.humi_calibration)
     for k,v in vars(param_put).items():
         print("{}={}".format(k, v))
 
@@ -182,6 +197,9 @@ def parse_args():
     parser.add_argument('--alarm', choices=['x', '3', '10'])
     parser.add_argument('--temp_unit', choices=['C', 'F'])
     parser.add_argument('--temp_calibration', type=float)
+    parser.add_argument("--humi_upper_limit", type=float)
+    parser.add_argument("--humi_lower_limit", type=float)
+    parser.add_argument('--humi_calibration', type=float)
     parser.add_argument('--time', type=str)
     parser.add_argument('--dev_num', type=str)
     parser.add_argument('--user_info', type=str)

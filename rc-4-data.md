@@ -78,15 +78,15 @@ e   チェックサム
  ...    ...............................................
 0090    00 00 00 00 00 00 00 00 00 00 39 39 30 30 31 31
          n                          ] [o
-00A0    32 32 33 33 00 31 00 31 F1 00 00 00 00 00 00 B3
-         o        ]  p  q  r  s  t [u              ]  v
+00A0    32 32 33 33 00 31 00 31 F1 02 5D 01 31 00 0F B3
+         o        ]  p  q  r  s  t [u  ] [v  ]  w  x  y
 
 a   定数: 55
 b   station no: uint8
-c   model no? RC4:0x40  
+c   model no? RC4:0x40 RC4HC:0x2A
 d   record interval: hhmiss(time)
-e   upper limit int16 /10  0x0258 -> 600 -> 60.0
-f   lower limit int16 /10  0xFED4 -> -300 -> -30.0
+e   temperature upper limit int16 /10  0x0258 -> 600 -> 60.0
+f   temperature lower limit int16 /10  0xFED4 -> -300 -> -30.0
 g   last online time(datetime)
 h   workstatus  00:not started / 01:start / 02:stop / 03:?
 i   start time(datetime)
@@ -101,8 +101,11 @@ q   tone set 13:permit / 31:prohibit
 r   alarm 00:prohibit / 03: 3times / 0A: 10times
 s   temperature unit 13:F / 31:C
 t   temperature calibration int8 / 10
-u   padding?
-v   チェックサム
+u   humidity upper limit int16 /10  0x025D -> 605 -> 60.5
+v   humidity lower limit int16 /10  0x0131 -> 305 -> 30.5
+w   ?
+x   humidity calibration int8 / 10
+y   チェックサム
 
 ```
 
@@ -120,15 +123,15 @@ user infomationとnumberはここでは書き込まない。デバイスナン�
         -----------------------------------------------
 0000    33 02 05 00 00 00 1E 02 58 FE D4 02 13 00 31 00
          a  b [c  ] [d     ] [e  ] [f  ]  g  h  i  j  k
-0010    31 F1 00 00 00 00 00 00 EC 
-         l  m [n              ]  o
+0010    31 F1 02 58 01 2C 00 0A EC
+         l  m [n  ] [o  ]  p  q  r
 
 a   定数: 33
 b   更新前ステーション番号
 c   パラメータ設定コマンド: 0500
 d   record interval: hhmiss(time)
-e   upper limit int16 /10  0x0258 -> 600 -> 60.0
-f   lower limit int16 /10  0xFED4 -> -300 -> -30.0
+e   temperature upper limit int16 /10  0x0258 -> 600 -> 60.0
+f   temperature lower limit int16 /10  0xFED4 -> -300 -> -30.0
 g   更新後ステーション番号
 h   stop button 13:permit / 31:prohibit
 i   delaytime 00:0h / 01:0.5h / 10:1.0h / 11:1.5h / 20:2.0h / 21: 2.5h
@@ -136,7 +139,11 @@ j   tone set 13:permit / 31:prohibit
 k   alarm 00:prohibit / 03: 3times / 0A: 10times
 l   temperature unit 13:F / 31:C
 m   temperature calibration int8 / 10
-n   padding?
+n   humidity upper limit int16 /10  0x0258 -> 600 -> 60.0
+o   humidity lower limit int16 /10  0x012C -> 300 -> 30.0
+p   ?
+q   humidity calibration int8 / 10
+r   チェックサム
 ```
 
 ### レスポンス
@@ -226,9 +233,9 @@ c   チェックサム
 ```
 
 
-## 温度データ：ヘッダ取得
+## 温湿度データ：ヘッダ取得
 
-デバイスに蓄積された温度データを収集のためのヘッダ情報を取得する。
+デバイスに蓄積された温湿度データを収集のためのヘッダ情報を取得する。
 
 ヘッダ情報からデータ件数や開始時間がわかり、この後に続くボディデータの取得回数などを決定できる。
 
@@ -264,9 +271,9 @@ c   start time(datetime)
 d   チェックサム
 ```
 
-## 温度データ：ボディ取得
+## 温湿度データ：ボディ取得
 
-デバイスに蓄積された温度データを収集する。
+デバイスに蓄積された温湿度データを収集する。
 
 ヘッダ情報から決定したデータ件数を使用し、このコマンドを何度か繰り返す。
 RC-4の場合、1ページにつき最大100件のデータが取得できるので、140件のデータの場合は、ページ0(100件)、ページ1(40件)の

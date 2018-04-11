@@ -79,6 +79,9 @@ class DeviceTest(unittest.TestCase):
         self.assertEqual(res.alarm, AlarmSetting.NONE)
         self.assertEqual(res.temp_unit, TemperatureUnit.C)
         self.assertEqual(res.temp_calibration, -1.5)
+        self.assertEqual(res.humi_upper_limit, 0)
+        self.assertEqual(res.humi_lower_limit, 0)
+        self.assertEqual(res.humi_calibration, 0)
 
     def test_update(self):
         device = elitech.Device(None)

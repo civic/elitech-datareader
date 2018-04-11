@@ -154,6 +154,9 @@ class DevInfoResponse(ResponseMessage):
     :type alarm: AlarmSetting
     :type temp_unit: TemperatureUnit
     :type temp_calibration: float
+    :type humi_upper_limit: float
+    :type humi_lower_limit: float
+    :type humi_calibration: float
     """
 
     def __init__(self, encode='utf8'):
@@ -175,6 +178,9 @@ class DevInfoResponse(ResponseMessage):
         self.alarm = None
         self.temp_unit = None
         self.temp_calibration = None
+        self.humi_upper_limit = None
+        self.humi_lower_limit = None
+        self.humi_calibration = None
         self._encode = encode
 
     def read(self, ser):
@@ -185,15 +191,15 @@ class DevInfoResponse(ResponseMessage):
 
         (_, station_no, _, model_no, _, rec_interval, upper_limit, lower_limit, last_online, work_sts,
          start_time, stp_btn, _, rec_count, current, user_info, dev_num, delay, tone_set,
-         alarm, temp_unit, temp_calib, _) = unpack(
+         alarm, temp_unit, temp_calib, humi_upper_limit, humi_lower_limit, _, humi_calib, _) = unpack(
             '>1s'
             'B'  # station no
             '1s'
             'B'  # model_no
             '1s'
             '3s'  # record interval hh mm ss
-            'h'  # upper limit
-            'h'  # lower limit
+            'h'  # temp upper limit
+            'h'  # temp lower limit
             '7s'  # last_online
             'b'  # work_status
             '7s'  # start_time
@@ -208,7 +214,11 @@ class DevInfoResponse(ResponseMessage):
             'b'  # alarm
             'b'  # temp unit
             'b'  # temp calibration
-            '7s',
+            'h'  # humi upper limit
+            'h'  # humi lower limit
+            '1s'
+            'b'  # humi calibration
+            '1s',
             res)
 
         self.station_no = station_no
@@ -252,6 +262,9 @@ class DevInfoResponse(ResponseMessage):
             self.temp_unit = TemperatureUnit.C
 
         self.temp_calibration = temp_calib / 10.0
+        self.humi_upper_limit = humi_upper_limit / 10.0
+        self.humi_lower_limit = humi_lower_limit / 10.0
+        self.humi_calibration = humi_calib / 10.0
 
     def to_param_put(self):
         """
@@ -269,6 +282,9 @@ class DevInfoResponse(ResponseMessage):
         req.alarm = self.alarm
         req.temp_unit = self.temp_unit
         req.temp_calibration = self.temp_calibration
+        req.humi_upper_limit = self.humi_upper_limit
+        req.humi_lower_limit = self.humi_lower_limit
+        req.humi_calibration = self.humi_calibration
 
         return req
 
@@ -286,6 +302,9 @@ class ParamPutRequest(RequestMessage):
     :type alarm: AlarmSetting
     :type temp_unit: TemperatureUnit
     :type temp_calibration: float
+    :type humi_upper_limit: float
+    :type humi_lower_limit: float
+    :type humi_calibration: float
     """
 
     def __init__(self, target_station_no):
@@ -302,6 +321,10 @@ class ParamPutRequest(RequestMessage):
         self.alarm = AlarmSetting.NONE
         self.temp_unit = TemperatureUnit.C
         self.temp_calibration = 0
+        self.humi_upper_limit = 0
+        self.humi_lower_limit = 0
+        self.humi_calibration = 0
+
 
     def to_bytes(self):
         write_bytes = pack(
@@ -309,8 +332,8 @@ class ParamPutRequest(RequestMessage):
             "B"  # target station no
             "2s"  # 0x0500
             "3s"  # record interval
-            "h"  # upper limit
-            "h"  # lower limit
+            "h"  # temp upper limit
+            "h"  # temp lower limit
             "B"  # update station no
             "b"  # stopbutton permit=0x13, prohibit=0x31
             "b"  # delaytime
@@ -318,7 +341,10 @@ class ParamPutRequest(RequestMessage):
             "b"  # alarm
             'b'  # temp unit
             'b'  # temp calibration
-            "6s",
+            "h"  # humi upper limit
+            "h"  # humi lower limit
+            "1s"
+            "b", # humi calibration
             0x33,
             self.target_station_no,
             _bin('05 00'),
@@ -332,7 +358,10 @@ class ParamPutRequest(RequestMessage):
             self.alarm.value,
             self.temp_unit.value,
             int(self.temp_calibration * 10.0),
-            _bin('00 00 00 00 00 00'),
+            int(self.humi_upper_limit * 10.0),
+            int(self.humi_lower_limit * 10.0),
+            _bin('00'),
+            int(self.humi_calibration * 10.0),
         )
 
         ba = _append_checksum(write_bytes)
