@@ -2,13 +2,14 @@ from setuptools import setup,find_packages
 import os
 
 from os import path
+import io
 
 this_directory = path.abspath(path.dirname(__file__))
-with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+with io.open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
         long_description = f.read()
 setup(
     name='elitech-datareader',
-    version='1.0.2',
+    version='1.0.3',
     packages=find_packages(),
     url='http://github.com/civic/elitech-datareader/',
     license='MIT',
