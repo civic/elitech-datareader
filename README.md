@@ -18,7 +18,7 @@ Enables to use RC-4/RC-5 on Mac, Linux, Windows.
 Requirements
 ------------
 
-- Python2.7, 3.4, 3.5
+- Python2.7, 3.4, 3.5, 3.6, 3.7
 - Serial Port Driver
     - (for RC-4 series) Silicon Labs CP210x USB-UART bridge VCP driver.  <http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx>
     - (for RC-5) CH340 Serial Driver [MacOSX](http://www.wch.cn/download/CH341SER_MAC_ZIP.html) (mac driver is unstable)
