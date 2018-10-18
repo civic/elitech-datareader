@@ -1,34 +1,22 @@
 from setuptools import setup,find_packages
 import os
-import setuptools.command.sdist
 
-class SdistCommand(setuptools.command.sdist.sdist):
-    def run(self):
-        try:
-            import pypandoc
+from os import path
 
-            rst = pypandoc.convert("README.md", "rst")
-            with open("README.txt", "w") as f:
-                f.write(rst)
-            print("convert markdown to rst")
-        except Exception as e:
-            raise e
-
-
-        super(SdistCommand, self).run()
-        os.remove("README.txt")
-
-
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+        long_description = f.read()
 setup(
-    cmdclass={'sdist': SdistCommand},
     name='elitech-datareader',
-    version='0.9.5',
+    version='1.0.2',
     packages=find_packages(),
     url='http://github.com/civic/elitech-datareader/',
     license='MIT',
     author='civic',
     author_email='dev@civic-apps.com',
     description='Elitech rc4 data access tool and library.',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
@@ -37,6 +25,8 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Topic :: Communications',
         'Topic :: Software Development :: Libraries',
         'Topic :: Software Development :: Libraries :: Python Modules',

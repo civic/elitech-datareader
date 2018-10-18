@@ -97,32 +97,32 @@ def command_set(args):
 
     station_no = dev_info.station_no
 
-    if args.interval:
+    if args.interval is not None:
         param_put.rec_interval = _convert_time(args.interval)
-    if args.upper_limit:
+    if args.upper_limit is not None:
         param_put.upper_limit = args.upper_limit
-    if args.lower_limit:
+    if args.lower_limit is not None:
         param_put.lower_limit = args.lower_limit
-    if args.station_no:
+    if args.station_no is not None:
         param_put.update_station_no = int(args.station_no)
         station_no = param_put.update_station_no
-    if args.stop_button:
+    if args.stop_button is not None:
         param_put.stop_button = StopButton.ENABLE if args.stop_button == 'y' else StopButton.DISABLE
-    if args.delay:
+    if args.delay is not None:
         param_put.delay = float(args.delay)
-    if args.tone_set:
+    if args.tone_set is not None:
         param_put.tone_set = ToneSet.PERMIT if args.tone_set == 'y' else ToneSet.NONE
-    if args.alarm:
+    if args.alarm is not None:
         if args.alarm == 'x':
             param_put.alarm = AlarmSetting.NONE
         elif args.alarm == '3':
             param_put.alarm = AlarmSetting.T3
         elif args.alarm == '10':
             param_put.alarm = AlarmSetting.T10
-    if args.temp_unit:
+    if args.temp_unit is not None:
         param_put.temp_unit = TemperatureUnit.C if args.temp_unit == 'C' else TemperatureUnit.F
 
-    if args.temp_calibration:
+    if args.temp_calibration is not None:
         param_put.temp_calibration = float(args.temp_calibration)
     if args.humi_upper_limit:
         param_put.humi_upper_limit = args.humi_upper_limit
@@ -135,11 +135,11 @@ def command_set(args):
 
     device.update(param_put)
 
-    if args.dev_num:
+    if args.dev_num is not None:
         device.set_device_number(station_no, args.dev_num)
         print("{}={}".format("dev_num", args.dev_num))
 
-    if args.user_info:
+    if args.user_info is not None:
         if type(args.user_info) == six.binary_type:
             args.user_info = args.user_info.decode("utf-8")
         device.set_user_info(station_no, args.user_info)
@@ -208,7 +208,7 @@ def parse_args():
     parser.add_argument('--req', type=str, help='for raw command')
     parser.add_argument('--res_len', type=int, help='for raw command', default=1000)
     parser.add_argument('--value_only', help='for latest command', action='store_true')
-    parser.add_argument('--ser_baudrate', help='serial port baudrate default=115000', default=115000, type=int)
+    parser.add_argument('--ser_baudrate', help='serial port baudrate default=115200', default=115200, type=int)
     parser.add_argument('--ser_timeout', help='serial port reading timeout sec', default=5, type=int)
     parser.add_argument('serial_port')
     return parser.parse_args()
