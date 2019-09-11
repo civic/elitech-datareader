@@ -12,8 +12,11 @@ This software is a data collecting tool, written in python for Temperature data 
 [RC-5](http://www.e-elitech.com/jingChuang3/shouYe.do?operate=doProductDetail&chanpinId=156) 
 is a reasonable data logger.
 
+**RC-5+(Note the plus "+" sign). ** is not supperted.
 
 Enables to use RC-4/RC-5 on Mac, Linux, Windows.
+
+This is an unofficial tool. This tool was made by monitoring and guessing serial communication data. That is why this software is not perfect.
 
 Requirements
 ------------
