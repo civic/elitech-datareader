@@ -9,7 +9,7 @@ with io.open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
         long_description = f.read()
 setup(
     name='elitech-datareader',
-    version='1.0.3',
+    version='1.0.4',
     packages=find_packages(),
     url='http://github.com/civic/elitech-datareader/',
     license='MIT',
