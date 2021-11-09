@@ -119,7 +119,7 @@ class Device:
         """
         devinfo = self.get_devinfo()
         header = self.get_data_header(devinfo.station_no)
-
+        data_size = 0  #<-- init this variable to 0 to avoid error "UnboundLocalError: local variable 'data_size' referenced before assignment"
         if page_size is None:
             if devinfo.model_no == 40: # RC-4
                 page_size = 100
@@ -128,6 +128,9 @@ class Device:
                 page_size = 200
                 data_size = 2
             elif devinfo.model_no == 50: #RC-5
+                page_size = 500
+                data_size = 1
+            elif devinfo.model_no == 62: #GSP-6
                 page_size = 500
                 data_size = 1
             else:
@@ -265,7 +268,7 @@ class Device:
         if devinfo.rec_count == 0:
             return (None, None, None)
         header = self.get_data_header(devinfo.station_no)
-
+        data_size = 0  #<-- init this variable to 0 to avoid error "UnboundLocalError: local variable 'data_size' referenced before assignment"
         if page_size is None:
             if devinfo.model_no == 40: # RC-4
                 page_size = 100
@@ -274,6 +277,9 @@ class Device:
                 page_size = 200
                 data_size = 2
             elif devinfo.model_no == 50: #RC-5
+                page_size = 500
+                data_size = 1
+            elif devinfo.model_no == 62: #GSP-6
                 page_size = 500
                 data_size = 1
             else:
@@ -311,5 +317,3 @@ class Device:
             time.sleep(self.wait_time)
 
         return latest
-
-
