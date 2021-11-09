@@ -130,9 +130,7 @@ class Device:
             elif devinfo.model_no == 50: #RC-5
                 page_size = 500
                 data_size = 1
-            #Change: introduce a new block to include the device model 62 (GSP-6); cloned from #RC-5.
-			#Error generated: "ValueError: ("Unknowm model_no (%d). can't decide page_size", 62)"
-			elif devinfo.model_no == 62: #GSP-6
+            elif devinfo.model_no == 62: #GSP-6
                 page_size = 500
                 data_size = 1
             else:
@@ -281,8 +279,6 @@ class Device:
             elif devinfo.model_no == 50: #RC-5
                 page_size = 500
                 data_size = 1
-			#Change: introduce a new block to include the device model 62 (GSP-6); cloned from #RC-5.
-			#Error generated: "ValueError: ("Unknowm model_no (%d). can't decide page_size", 62)"
             elif devinfo.model_no == 62: #GSP-6
                 page_size = 500
                 data_size = 1
