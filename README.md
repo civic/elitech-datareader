@@ -21,7 +21,7 @@ This is an unofficial tool. This tool was made by monitoring and guessing serial
 Requirements
 ------------
 
-- Python2.7, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9
+- Python2.7, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 3.10
 - Serial Port Driver
     - (for RC-4 series) Silicon Labs CP210x USB-UART bridge VCP driver.  <http://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx>
     - (for RC-5) CH340 Serial Driver [MacOSX](http://www.wch.cn/download/CH341SER_MAC_ZIP.html) (mac driver is unstable)
